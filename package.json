@@ -14,9 +14,10 @@
   "license": "MIT",
   "dependencies": {
     "@tailwindcss/vite": "^4.1.10",
-    "@tauri-apps/api": "^2",
+    "@tauri-apps/api": "^2.5.0",
     "@tauri-apps/plugin-opener": "^2",
-    "tailwindcss": "^4.1.10"
+    "tailwindcss": "^4.1.10",
+    "tauri-plugin-login-browser-api": "./tauri-plugin-loginbrowser"
   },
   "devDependencies": {
     "@iconify/svelte": "^5.0.0",

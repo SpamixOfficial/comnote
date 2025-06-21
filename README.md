@@ -1,5 +1,17 @@
 # ComNote
 
+Custom frontend for MyAnimeList
+
+## Features
+
+- No ads!
+- Beautiful and sleek interface
+- Awesome performance
+- Customization and themes
+- Better tag system (note, on-device only at the moment)
+
+# OLD
+
 Picture this: You and your friend group all have different lists of animes you want to watch or have watched, you have given each entry unique properties (**eg. bold font for recommended by friends**) and all of this is in an Apple Notes document. How the hell are you supposed to share this with your friends...?
 
 

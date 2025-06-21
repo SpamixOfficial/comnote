@@ -3,16 +3,7 @@
 </script>
 
 <main class="container">
-    <div class="hero min-h-screen min-w-screen">
-        <div class="hero-content text-center">
-            <div class="max-w-md">
-                <h1 class="text-5xl font-bold">Hello there</h1>
-                <p class="py-6">
-                    Provident cupiditate voluptatem et in. Quaerat fugiat ut assumenda excepturi exercitationem quasi.
-                    In deleniti eaque aut repudiandae et a id nisi.
-                </p>
-                <button class="btn btn-primary">Get Started</button>
-            </div>
-        </div>
+    <div class="flex flex-col gap-5 h-screen w-screen p-5 justify-center items-center">
+        <a href="/login">abc</a>
     </div>
 </main>
