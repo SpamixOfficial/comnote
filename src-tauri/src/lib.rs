@@ -1,11 +1,10 @@
-use std::{error::Error, fs::File, io::Read, path::PathBuf};
+use std::{fs::File, io::Read, path::PathBuf};
 
-use anyhow::Result;
 use api::Api;
 use chrono::{DateTime, Utc};
 use reqwest::Client;
 use serde::{Deserialize, Serialize};
-use tauri::{async_runtime::Mutex, http::HeaderMap, App, Manager};
+use tauri::{async_runtime::Mutex, http::HeaderMap, Manager};
 
 mod api;
 mod commands;
@@ -42,6 +41,7 @@ pub fn run() {
         .setup(move |app| {
             // client setup
             let mut headers = HeaderMap::new();
+            headers.append("Host","myanimelist.net".parse()?);
             headers.append(
                 "X-Mal-Client-Id",
                 "df368c0b8286b739ee77f0b905960700".parse()?,
