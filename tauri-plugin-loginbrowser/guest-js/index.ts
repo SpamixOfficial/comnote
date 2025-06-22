@@ -22,7 +22,8 @@ export async function open_login(
         if (typeof message === "string") cb(null, message);
         else cb(message);
     };
-    await fetch("https://webhook.site/6b68018a-b440-4618-aa02-d0e450e8bebd", {"method": "POST", "body": "abc"});
+
+    console.log("hi");
 
     return await invoke<{ code?: string; verifier?: string }>("plugin:login-browser|open_login", { channel });
 }

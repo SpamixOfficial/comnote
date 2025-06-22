@@ -28,6 +28,30 @@ impl Api {
             ("grant_type", "authorization_code"),
         ];
 
+        let raw_response = self
+            .client
+            .post("https://myanimelist.net/v1/oauth2/token")
+            .query(&query)
+            .send()
+            .await?;
+        let text = raw_response.text().await.unwrap();
+        dbg!(&text);
+        let response: OAuthResponse = serde_json::from_str(&text).unwrap();
+
+        Ok(response)
+    }
+
+    pub async fn refresh_token(&self, refresh_token: String, verifier: String) -> Result<OAuthResponse> {
+        let query = [
+            ("client_id", CLIENT_ID),
+            ("refresh_token", &refresh_token),
+            (
+                "code_verifier",
+                &verifier,
+            ),
+            ("grant_type", "refresh_token"),
+        ];
+
         let response: OAuthResponse = self
             .client
             .post("https://myanimelist.net/v1/oauth2/token")
