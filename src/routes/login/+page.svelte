@@ -9,7 +9,7 @@
         <button
             class="btn btn-primary btn-block btn-lg"
             onclick={async () => {
-                await open_login();
+                await open_login((x, e) => {console.log(x, e)});
             }}><p class="font-semibold">Login</p></button
         >
     </div>

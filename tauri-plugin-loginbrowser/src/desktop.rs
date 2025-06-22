@@ -1,5 +1,5 @@
 use serde::de::DeserializeOwned;
-use tauri::{plugin::PluginApi, AppHandle, Runtime};
+use tauri::{ipc::Channel, plugin::PluginApi, AppHandle, Runtime};
 
 use crate::models::*;
 
@@ -14,9 +14,10 @@ pub fn init<R: Runtime, C: DeserializeOwned>(
 pub struct LoginBrowser<R: Runtime>(AppHandle<R>);
 
 impl<R: Runtime> LoginBrowser<R> {
-  pub fn open_login(&self) -> crate::Result<LoginResponse> {
+  pub fn open_login(&self, _: Channel) -> crate::Result<LoginResponse> {
     Ok(LoginResponse {
-      code: String::from("abc")
+      code: String::from("abc"),
+      verifier: String::from("abc")
     })
   }
 

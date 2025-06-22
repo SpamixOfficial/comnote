@@ -9,9 +9,10 @@ import androidx.webkit.*
 import android.webkit.*
 import android.content.Intent
 
+
 class Browser {
     // will probably change so it returns empty (webview is async)
-    fun openLogin(activity: Activity): String {
+    fun openLogin(activity: Activity, loginCallback: (login: LoginData) -> Unit) {
         // Hardcoded client_id in the app btw
         val url = "https://myanimelist.net/v1/oauth2/authorize?response_type=code&client_id=df368c0b8286b739ee77f0b905960700&state=ZtdugS6uXn&redirect_uri=net.myanimelist&code_challenge=DrHJdVvTfzZ6nq449ih12DtOPzkD0fLPY1AwAp5qcLF&code_challenge_method=plain&force_logout=1"
         val webview: WebView = WebView(activity)
@@ -31,7 +32,7 @@ class Browser {
         webview.settings.domStorageEnabled = true
 
         // Create interceptor
-        webview.webViewClient = InterceptorClient(activity)
+        webview.webViewClient = InterceptorClient(activity, loginCallback)
 
         val layoutParams = FrameLayout.LayoutParams(
             ViewGroup.LayoutParams.MATCH_PARENT,
@@ -45,13 +46,14 @@ class Browser {
 }
 
 
-private class InterceptorClient(private val activity: Activity) : WebViewClient() {
+private class InterceptorClient(private val activity: Activity, private val cb: (login: LoginData) -> Unit) : WebViewClient() {
     override fun shouldOverrideUrlLoading(view: WebView?, url: String?): Boolean {
         val uri = Uri.parse(url)
         println("loofball_v123: [[ ${url} ]] [[ ${uri.getPathSegments()} ]] [[ ${uri.getQueryParameterNames()} ]]")
         // TODO: Forward code to parent to finish setup process
-        if (uri.getScheme() == "net.myanimelist" &&  == "login.input") {
+        if (uri.getScheme() == "net.myanimelist") {
             // destroy this webview but keep parent intact
+            cb(LoginData(code = "abc", verifier = "abd"))
             (view?.parent as? ViewGroup)?.removeView(view)
             return true
         }

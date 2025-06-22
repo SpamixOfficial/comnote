@@ -29,3 +29,5 @@ reqwest = { version = "0.12.20", features = [
 ] }
 tauri-plugin-login-browser = { path = "../tauri-plugin-loginbrowser" }
 tauri-plugin-devtools = "2.0.0"
+chrono = { version = "0.4.41", features = ["serde"] }
+anyhow = "1.0.98"
