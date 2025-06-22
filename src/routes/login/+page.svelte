@@ -1,4 +1,5 @@
 <script lang="ts">
+    import { goto } from "$app/navigation";
     import Icon from "@iconify/svelte";
     import { invoke } from "@tauri-apps/api/core";
     import { onMount } from "svelte";
@@ -10,7 +11,7 @@
 
     onMount(async () => {
         logged_in = await invoke("logged_in");
-    })
+    });
 </script>
 
 <main class="container">
@@ -18,7 +19,7 @@
         {#if failure}
             <div role="alert" class="min-w-full alert alert-error bg-base-200 border-2 shadow-error shadow-lg/50">
                 <Icon icon="material-symbols:error" width="24" height="24" class="mb-1" />
-                <span>Login failed: <code class="font-mono bg-">{error_message}</code></span>
+                <span>Login failed: <code class="font-mono bg-base-300">{error_message}</code></span>
             </div>
         {:else if success}
             <div role="alert" class="min-w-full alert alert-success bg-base-200 border-2 shadow-success shadow-lg/50">
@@ -28,7 +29,7 @@
         {/if}
     </div>
     <div class="flex flex-col gap-5 h-screen w-screen p-5 justify-center items-center">
-        <h1 class="font-bold text-5xl">ComNote</h1>
+        <h1 class="font-bold text-4xl text-center">Login To MyAnimeList</h1>
         <button
             class="btn btn-primary btn-block btn-lg shadow-primary shadow-xl/30"
             disabled={logged_in}
@@ -50,6 +51,14 @@
             {:else}
                 <p class="font-semibold">Logged In</p>
             {/if}
+        </button>
+        <button
+            class="btn btn-accent btn-outline btn-sm w-96/100 shadow-accent shadow-xl/30"
+            onclick={() => {
+                goto("/");
+            }}
+        >
+            <p class="font-semibold">Go Back</p>
         </button>
     </div>
 </main>
