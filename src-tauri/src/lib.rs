@@ -23,6 +23,7 @@ pub struct AuthState {
     refresh_token: String,
     authenticated: Option<bool>,
     expires: DateTime<Utc>,
+    verifier: String,
 }
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
@@ -41,7 +42,7 @@ pub fn run() {
         .setup(move |app| {
             // client setup
             let mut headers = HeaderMap::new();
-            headers.append("Host","myanimelist.net".parse()?);
+            headers.append("Host", "myanimelist.net".parse()?);
             headers.append(
                 "X-Mal-Client-Id",
                 "df368c0b8286b739ee77f0b905960700".parse()?,
@@ -56,15 +57,24 @@ pub fn run() {
                 let mut file = File::open(&store_path)?;
                 let mut contents = String::from("");
                 file.read_to_string(&mut contents)?;
-                let parsed: AppSettings = serde_json::from_str(&contents)?;
-                settings = parsed.clone();
+                let try_parsed = serde_json::from_str::<AppSettings>(&contents);
+                // we don't want a crash on startup :-)
+                if let Ok(parsed) = try_parsed {
+                    settings = parsed.clone();
 
-                auth = AuthState {
-                    access_token: parsed.access_token,
-                    refresh_token: parsed.refresh_token,
-                    authenticated: Some(parsed.authenticated),
-                    expires: parsed.expires,
-                };
+                    auth = AuthState {
+                        access_token: parsed.access_token,
+                        refresh_token: parsed.refresh_token,
+                        authenticated: Some(parsed.authenticated),
+                        expires: parsed.expires,
+                        verifier: parsed.verifier,
+                    };
+                } else {
+                    let e = try_parsed.err().unwrap();
+                    #[cfg(debug_assertions)]
+                    eprintln!("Config-load Failed: [\n\tE: \"{}\"\n]", e.to_string());
+                    settings = AppSettings::default();
+                }
             } else {
                 settings = AppSettings::default();
             }
@@ -86,7 +96,8 @@ pub fn run() {
         .invoke_handler(tauri::generate_handler![
             commands::auth::login,
             commands::auth::logged_in,
-            commands::auth::session_expired
+            commands::auth::session_expired,
+            commands::auth::refresh_login
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
@@ -98,4 +109,5 @@ struct AppSettings {
     refresh_token: String,
     authenticated: bool,
     expires: DateTime<Utc>,
+    verifier: String,
 }

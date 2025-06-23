@@ -18,13 +18,13 @@
     <div class="flex fixed flex-col gap-5 w-screen p-2 pt-7 items-center">
         {#if failure}
             <div role="alert" class="min-w-full alert alert-error bg-base-200 border-2 shadow-error shadow-lg/50">
-                <Icon icon="material-symbols:error" width="24" height="24" class="mb-1" />
-                <span>Login failed: <code class="font-mono bg-base-300">{error_message}</code></span>
+                <Icon icon="material-symbols:error" width="24" height="24" class="mb-1 text-error" />
+                <span class="text-base-content">Login failed: <code class="font-mono bg-base-300">{error_message}</code></span>
             </div>
-        {:else if success}
+        {:else if true}
             <div role="alert" class="min-w-full alert alert-success bg-base-200 border-2 shadow-success shadow-lg/50">
-                <Icon icon="material-symbols:error" width="24" height="24" class="mb-1" />
-                <span>🎉 You're logged in! You may continue using the app as-is, but it is recommended to restart</span>
+                <Icon icon="material-symbols:error" width="24" height="24" class="mb-1 text-success" />
+                <span class="text-base-content">🎉 You're logged in! You may continue using the app as-is, but it is recommended to restart</span>
             </div>
         {/if}
     </div>
