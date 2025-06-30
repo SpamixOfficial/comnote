@@ -2,12 +2,14 @@
     import Icon from "@iconify/svelte";
     import { invoke } from "@tauri-apps/api/core";
     import { onMount } from "svelte";
+    
     let logged_in = $state(false);
     let refresh_state = $state({
         success: false,
         failure: false,
         error: "None :D",
     });
+
     onMount(async () => {
         logged_in = await invoke("logged_in");
         let has_session_expired = await invoke("session_expired");
