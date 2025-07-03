@@ -14,7 +14,7 @@ pub async fn login(
 ) -> Result<(), String> {
     let mut state = state.lock().await;
 
-    let oauth = match state.api.consume_code(code, verifier.clone()).await {
+    let oauth = match state.api.login.consume_code(code, verifier.clone()).await {
         Err(e) => return Err(e.to_string()),
         Ok(x) => x,
     };
@@ -60,7 +60,7 @@ pub async fn refresh_login(
         return Err(String::from("You aren't logged in, please log in before trying to refresh your token!"))
     }
 
-    let oauth = match state.api.refresh_token(state.auth.refresh_token.clone(), state.auth.verifier.clone()).await {
+    let oauth = match state.api.login.refresh_token(state.auth.refresh_token.clone(), state.auth.verifier.clone()).await {
         Err(e) => return Err(e.to_string()),
         Ok(x) => x,
     };

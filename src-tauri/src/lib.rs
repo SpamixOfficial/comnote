@@ -81,7 +81,7 @@ pub fn run() {
 
             let client = Client::builder().default_headers(headers).build()?;
 
-            let api = Api { client };
+            let api = Api::new(client);
 
             let state = AppState {
                 api,

@@ -1,30 +1,23 @@
+use std::sync::Arc;
+
 use anyhow::{anyhow, Result};
-use reqwest::StatusCode;
-use serde::{Deserialize, Serialize};
+use reqwest::{Client, StatusCode};
 
-use crate::api::Api;
+use crate::api::{models::{OAuthError, OAuthResponse}, CLIENT_ID};
 
-const CLIENT_ID: &str = "df368c0b8286b739ee77f0b905960700";
 
-#[derive(Debug, Clone, Deserialize, Serialize)]
-#[serde(rename_all = "camelCase")]
-pub struct OAuthResponse {
-    #[serde(rename = "expires_in")]
-    pub expires_in: isize,
-    #[serde(rename = "access_token")]
-    pub access_token: String,
-    #[serde(rename = "refresh_token")]
-    pub refresh_token: String,
+#[derive(Debug)]
+pub struct ApiLogin {
+    pub client: Arc<Client>
 }
 
-#[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
-#[serde(rename_all = "camelCase")]
-pub struct OAuthError {
-    pub error: String,
-    pub message: String,
-}
+impl ApiLogin {
+    pub fn new(client: &Arc<Client>) -> Self {
+        return Self {
+            client: Arc::clone(client)
+        }
+    }
 
-impl Api {
     pub async fn consume_code(&self, code: String, verifier: String) -> Result<OAuthResponse> {
         let form = [
             ("client_id", CLIENT_ID),
