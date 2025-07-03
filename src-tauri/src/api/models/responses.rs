@@ -2,8 +2,7 @@ use chrono::{DateTime, Duration, Utc};
 use serde::{Deserialize, Serialize};
 
 use crate::api::models::generic::{
-    AiringStatus, AlternativeTitles, AnimeType, Broadcast, FavoriteInfo, Genre, MainImageAsset,
-    Season,
+    AiringStatus, AlternativeTitles, AnimeType, Broadcast, FavoriteInfo, Genre, MainImageAsset, Ranking, Season
 };
 
 /// Response from the oauth process
@@ -38,7 +37,7 @@ pub struct AnimeSummary {
 
     #[serde(rename = "num_list_users")]
     pub num_in_lists: usize,
-    
+
     #[serde(rename = "popularity")]
     pub rank_in_lists: usize,
     pub rank: usize,
@@ -48,6 +47,9 @@ pub struct AnimeSummary {
     pub synopsis: String,
     pub title: String,
     pub updated_at: DateTime<Utc>,
+
+    // Only present in ranking posts
+    pub ranking: Option<Ranking>
 
 
     // Not needed in our case, but if you're building an API based on this feel free to implement this as well!

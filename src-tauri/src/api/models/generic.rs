@@ -5,7 +5,7 @@ use serde::{Deserialize, Serialize};
 use url::Url;
 
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
-pub struct OAuthError {
+pub struct ApiError {
     pub error: String,
     pub message: String,
 }
@@ -105,4 +105,37 @@ impl AgeRating {
             Self::RPlus => 17..
         }
     }
+}
+
+/// Ranking to search for (eg. Now Watching, Just Added, Airing, Trending, etc.)
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(rename_all = "snake_case")]
+pub enum SearchRanking {
+    JustAdded,
+    MostPopular,
+    NowWatching,
+    Top10Airing,
+    Top10Upcoming,
+    TopAnime,
+    Trending
+}
+
+/// Ranking in respective category
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct Ranking {
+    pub rank: usize,
+    pub previous_rank: Option<usize>
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(rename_all = "snake_case")]
+pub enum SearchSort {
+    /// Sort by rating (mean) (greatest to least)
+    ScoreVal,
+    /// Sort by amount of list-adds (most to least)
+    TotalMembers,
+    /// Sort by start_date, from latest to earliest
+    StartDate,
+    /// this means no sort at all
+    Default 
 }

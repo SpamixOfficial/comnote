@@ -3,7 +3,7 @@ use std::sync::Arc;
 use anyhow::{anyhow, Result};
 use reqwest::{Client, StatusCode};
 
-use crate::api::{models::{generic::OAuthError, responses::OAuthResponse}, CLIENT_ID};
+use crate::api::{handle_error, models::{generic::ApiError, responses::OAuthResponse}, CLIENT_ID};
 
 
 #[derive(Debug)]
@@ -35,20 +35,7 @@ impl ApiLogin {
             .send()
             .await?;
 
-        if raw_response.status() != StatusCode::OK {
-            let err_val: OAuthError = raw_response.json().await?;
-
-            #[cfg(debug_assertions)]
-            eprintln!(
-                "Login Failed: [\n\tE: \"{}\"\n\tM:\"{}\"\n]",
-                err_val.error, err_val.message
-            );
-
-            return Err(anyhow!(err_val.message));
-        }
-
-        let response: OAuthResponse = raw_response.json().await?;
-        Ok(response)
+        handle_error::<OAuthResponse>(raw_response).await
     }
 
     pub async fn refresh_token(
@@ -72,19 +59,6 @@ impl ApiLogin {
             .send()
             .await?;
 
-        if raw_response.status() != StatusCode::OK {
-            let err_val: OAuthError = raw_response.json().await?;
-
-            #[cfg(debug_assertions)]
-            eprintln!(
-                "Token-Refresh Failed: [\n\tE: \"{}\"\n\tM:\"{}\"\n]",
-                err_val.error, err_val.message
-            );
-
-            return Err(anyhow!(err_val.message));
-        }
-
-        let response: OAuthResponse = raw_response.json().await?;
-        Ok(response)
+        handle_error::<OAuthResponse>(raw_response).await
     }
 }
