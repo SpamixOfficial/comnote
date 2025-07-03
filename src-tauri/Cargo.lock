@@ -626,6 +626,7 @@ dependencies = [
  "tauri-plugin-devtools",
  "tauri-plugin-login-browser",
  "tauri-plugin-opener",
+ "url",
 ]
 
 [[package]]

@@ -3,7 +3,7 @@ use std::sync::Arc;
 use anyhow::{anyhow, Result};
 use reqwest::{Client, StatusCode};
 
-use crate::api::{models::{OAuthError, OAuthResponse}, CLIENT_ID};
+use crate::api::{models::{generic::OAuthError, responses::OAuthResponse}, CLIENT_ID};
 
 
 #[derive(Debug)]

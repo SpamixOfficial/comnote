@@ -1,7 +1,7 @@
 use std::sync::Arc;
 use reqwest::Client;
 
-#[derive(Debug, Gener)]
+#[derive(Debug)]
 pub struct ApiAnime {
     client: Arc<Client>
 }
