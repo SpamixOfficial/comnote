@@ -2,7 +2,7 @@ use std::{fs::File, io::Read, path::PathBuf};
 
 use api::Api;
 use chrono::{DateTime, Utc};
-use reqwest::Client;
+use reqwest::{Client, Proxy};
 use serde::{Deserialize, Serialize};
 use tauri::{async_runtime::Mutex, http::HeaderMap, Manager};
 
@@ -97,7 +97,8 @@ pub fn run() {
             commands::auth::login,
             commands::auth::logged_in,
             commands::auth::session_expired,
-            commands::auth::refresh_login
+            commands::auth::refresh_login,
+            commands::anime::get_just_added
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

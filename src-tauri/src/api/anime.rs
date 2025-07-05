@@ -2,7 +2,7 @@ use anyhow::Result;
 use reqwest::Client;
 use std::sync::Arc;
 
-use crate::api::{handle_error, models::responses::AnimeSummary, API_BASE};
+use crate::api::{default_headers, handle_error, models::responses::AnimeResponse, API_BASE};
 
 #[derive(Debug)]
 pub struct ApiAnime {
@@ -18,7 +18,7 @@ impl ApiAnime {
 
     /// Limit number of returned items to `limit`
     /// Start returning items from index `offset`
-    pub async fn get_just_added(&self, limit: usize, offset: usize) -> Result<Vec<AnimeSummary>> {
+    pub async fn get_just_added(&self, limit: usize, offset: usize) -> Result<AnimeResponse> {
         let form = [
             ("total_members", "50"),
             ("limit", &format!("{}", limit)),
@@ -29,11 +29,11 @@ impl ApiAnime {
 
         let raw_response = self
             .client
-            .post(API_BASE.to_owned() + "/anime")
-            .header("Content-Type", "application/json")
+            .get(API_BASE.to_owned() + "/anime")
+            .headers(default_headers()?)
             .query(&form)
             .send()
             .await?;
-        handle_error::<Vec<AnimeSummary>>(raw_response).await
+        handle_error::<AnimeResponse>(raw_response).await
     }
 }

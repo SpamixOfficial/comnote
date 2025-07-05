@@ -1,17 +1,28 @@
 use std::ops::{RangeFrom};
 
+use ts_rs::TS;
 use chrono::{DateTime, Utc, Weekday};
 use serde::{Deserialize, Serialize};
 use url::Url;
 
-#[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize, TS)]
+#[ts(export)]
 pub struct ApiError {
     pub error: String,
     pub message: String,
 }
 
+
+#[derive(Debug, Clone, Serialize, Deserialize, TS)]
+#[ts(export)]
+pub struct ApiPaging {
+    pub next: Url
+}
+
+
 /// Alternative titles for the anime (and well-known registered synonyms)
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, TS)]
+#[ts(export)]
 pub struct AlternativeTitles {
     pub en: String,
     pub ja: String,
@@ -19,32 +30,37 @@ pub struct AlternativeTitles {
 }
 
 /// When is this usually broadcasted
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, TS)]
+#[ts(export)]
 pub struct Broadcast {
     pub day_of_the_week: Weekday,
     pub start_time: DateTime<Utc>
 }
 
 /// Unsure about the usecase for this
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, TS)]
+#[ts(export)]
 pub struct FavoriteInfo {
     pub added_at: DateTime<Utc>
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, TS)]
+#[ts(export)]
 pub struct Genre {
     pub id: usize,
     pub name: String
 }
 
 /// Picture/Image asset, containing medium and large sized images
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, TS)]
+#[ts(export)]
 pub struct MainImageAsset {
     pub medium: Url,
     pub large: Url
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, TS)]
+#[ts(export)]
 #[serde(rename_all = "snake_case")]
 pub enum AnimeType {
     Tv,
@@ -59,13 +75,15 @@ pub enum AnimeType {
     Unknown
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, TS)]
+#[ts(export)]
 pub struct Season {
     pub season: SeasonEnum,
     pub year: usize
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, TS)]
+#[ts(export)]
 #[serde(rename_all = "lowercase")]
 pub enum SeasonEnum {
     Autumn,
@@ -75,7 +93,8 @@ pub enum SeasonEnum {
     Winter
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, TS)]
+#[ts(export)]
 #[serde(rename_all = "snake_case")]
 pub enum AiringStatus {
     NotYetAired,
@@ -83,7 +102,8 @@ pub enum AiringStatus {
     FinishedAiring
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, TS)]
+#[ts(export)]
 #[serde(rename_all = "snake_case")]
 pub enum AgeRating {
     Pg13,
@@ -108,7 +128,8 @@ impl AgeRating {
 }
 
 /// Ranking to search for (eg. Now Watching, Just Added, Airing, Trending, etc.)
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, TS)]
+#[ts(export)]
 #[serde(rename_all = "snake_case")]
 pub enum SearchRanking {
     JustAdded,
@@ -121,13 +142,15 @@ pub enum SearchRanking {
 }
 
 /// Ranking in respective category
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, TS)]
+#[ts(export)]
 pub struct Ranking {
     pub rank: usize,
     pub previous_rank: Option<usize>
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, TS)]
+#[ts(export)]
 #[serde(rename_all = "snake_case")]
 pub enum SearchSort {
     /// Sort by rating (mean) (greatest to least)

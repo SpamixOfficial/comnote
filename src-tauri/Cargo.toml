@@ -32,3 +32,4 @@ tauri-plugin-devtools = "2.0.0"
 chrono = { version = "0.4.41", features = ["serde"] }
 anyhow = "1.0.98"
 url = { version = "2.5.4", features = ["serde"] }
+ts-rs = { version = "11.0.1", features = ["url-impl", "chrono-impl", "serde-json-impl", "tokio-impl"] }

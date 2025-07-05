@@ -1,6 +1,6 @@
 use std::{fs::OpenOptions, io::Write};
 
-use anyhow::{anyhow, Result};
+use anyhow::Result;
 use chrono::{TimeDelta, Utc};
 use tauri::{async_runtime::Mutex, State};
 
@@ -114,10 +114,3 @@ pub async fn session_expired(state: State<'_, Mutex<AppState>>) -> Result<bool, 
 
     Ok(Utc::now() >= state.auth.expires)
 }
-
-
-// WIP; can't really test anything until UI is done :(
-/*#[tauri::command]
-pub async fn get_just_added(state: State<'_, Mutex<AppState>>) -> Result<bool, String> {
-    let state = state.lock().await;
-}*/
