@@ -48,7 +48,7 @@ pub struct AnimeSummary {
     pub main_picture: MainImageAsset,
 
     #[serde(rename = "mean")]
-    pub rating: Option<usize>,
+    pub rating: Option<f64>,
     pub media_type: AnimeType,
     pub num_episodes: usize,
     pub num_favorites: usize,
