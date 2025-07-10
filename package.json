@@ -16,6 +16,7 @@
     "@faker-js/faker": "^9.9.0",
     "@tauri-apps/api": "^2.5.0",
     "@tauri-apps/plugin-opener": "^2",
+    "cocoapods": "^0.0.0",
     "tauri-plugin-login-browser-api": "./tauri-plugin-loginbrowser"
   },
   "devDependencies": {
