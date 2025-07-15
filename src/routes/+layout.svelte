@@ -4,7 +4,7 @@
     import "../app.css";
     import { fly } from "svelte/transition";
 
-    window.document.getElementsByTagName("html").item(0)?.setAttribute("data-theme", "comdark");
+    window.document.getElementsByTagName("html").item(0)?.setAttribute("data-theme", "comlight");
 </script>
 
 {#key data.url}

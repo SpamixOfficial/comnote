@@ -33,7 +33,7 @@
 </script>
 
 <main class="container">
-    <div class="flex fixed flex-col gap-5 w-screen p-2 pt-7 items-center">
+    <div class="flex fixed flex-col gap-5 w-screen px-2 pt-7 items-center">
         {#if refresh_state.failure}
             <div role="alert" class="min-w-full alert alert-error bg-base-200 border-2 shadow-error shadow-lg/50">
                 <Icon icon="material-symbols:error" width="24" height="24" class="mb-1 text-error" />
