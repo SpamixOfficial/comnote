@@ -1,7 +1,7 @@
 import 'package:json_annotation/json_annotation.dart';
 part 'generic.g.dart';
 
-@JsonSerializable()
+@JsonSerializable(fieldRename: FieldRename.snake)
 class ApiError {
   final String error, message;
   ApiError(this.error, this.message);
@@ -11,7 +11,7 @@ class ApiError {
   Map<String, dynamic> toJson() => _$ApiErrorToJson(this);
 }
 
-@JsonSerializable()
+@JsonSerializable(fieldRename: FieldRename.snake)
 class ApiPaging {
   final Uri next;
 
@@ -22,7 +22,7 @@ class ApiPaging {
   Map<String, dynamic> toJson() => _$ApiPagingToJson(this);
 }
 
-@JsonSerializable()
+@JsonSerializable(fieldRename: FieldRename.snake)
 class AlternativeTitles {
   final String en;
   final String ja;
@@ -39,7 +39,7 @@ class AlternativeTitles {
   Map<String, dynamic> toJson() => _$AlternativeTitlesToJson(this);
 }
 
-@JsonSerializable()
+@JsonSerializable(fieldRename: FieldRename.snake)
 class Broadcast {
   final WeekDay dayOfTheWeek;
   final DateTime startTime;
@@ -51,7 +51,7 @@ class Broadcast {
   Map<String, dynamic> toJson() => _$BroadcastToJson(this);
 }
 
-@JsonSerializable()
+@JsonSerializable(fieldRename: FieldRename.snake)
 class FavoriteInfo {
   final DateTime addedAt;
 
@@ -62,7 +62,7 @@ class FavoriteInfo {
   Map<String, dynamic> toJson() => _$FavoriteInfoToJson(this);
 }
 
-@JsonSerializable()
+@JsonSerializable(fieldRename: FieldRename.snake)
 class Genre {
   final int id;
   final String name;
@@ -73,7 +73,7 @@ class Genre {
   Map<String, dynamic> toJson() => _$GenreToJson(this);
 }
 
-@JsonSerializable()
+@JsonSerializable(fieldRename: FieldRename.snake)
 class MainImageAsset {
   final Uri medium, large;
 
@@ -98,7 +98,7 @@ enum AnimeType {
   unknown,
 }
 
-@JsonSerializable()
+@JsonSerializable(fieldRename: FieldRename.snake)
 class Season {
   final SeasonEnum season;
   final int year;
@@ -129,7 +129,7 @@ enum SearchRanking {
   trending,
 }
 
-@JsonSerializable()
+@JsonSerializable(fieldRename: FieldRename.snake)
 class Ranking {
   final int rank;
   final int? previousRank;

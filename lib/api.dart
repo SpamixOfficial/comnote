@@ -1,12 +1,13 @@
 import 'dart:convert';
+import 'dart:developer';
 
+import 'package:comnote/api/anime.dart';
+import 'package:comnote/api/login.dart';
 import 'package:dio/dio.dart';
 import 'package:result_dart/result_dart.dart';
 
 final clientId = "df368c0b8286b739ee77f0b905960700";
-
-class MALApi {
-  final dio = Dio(
+final dio = Dio(
     BaseOptions(
       baseUrl: "https://api.myanimelist.net/v3",
       headers: {
@@ -16,6 +17,10 @@ class MALApi {
       },
     ),
   );
+
+class MALApi {
+  final AnimeApi anime = AnimeApi(dio);
+  final LoginApi login = LoginApi(dio);
 }
 
 Future<ResultDart<ST, ET>> apiCall<ST extends Object, ET extends Object>(
@@ -25,11 +30,11 @@ Future<ResultDart<ST, ET>> apiCall<ST extends Object, ET extends Object>(
 ) async {
   try {
     var resp = await cb();
-    ST respVal = scb(jsonDecode(resp.data) as Map<String, dynamic>);
+    ST respVal = scb(resp.data);
     return Success(respVal);
   } on DioException catch (e) {
-    var errMap = jsonDecode(e.response?.data) as Map<String, dynamic>;
-    ET err = ecb(errMap);
+    log("Error encountered.\n---- Metadata ----\nUri: ${e.requestOptions.uri}\nResponse:\n${e.response?.data ?? "---- No data! ----"}");
+    ET err = ecb(e.response?.data);
     return Failure(err);
   }
 }

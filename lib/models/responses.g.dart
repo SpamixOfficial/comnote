@@ -6,6 +6,22 @@ part of 'responses.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
+OAuthResponse _$OAuthResponseFromJson(Map<String, dynamic> json) =>
+    OAuthResponse(
+      json['access_token'] as String,
+      json['refresh_token'] as String,
+      OAuthResponse._expiresAtFromMilliseconds(
+        (json['expires_in'] as num).toInt(),
+      ),
+    );
+
+Map<String, dynamic> _$OAuthResponseToJson(OAuthResponse instance) =>
+    <String, dynamic>{
+      'access_token': instance.accessToken,
+      'refresh_token': instance.refreshToken,
+      'expires_in': instance.expiresAt.toIso8601String(),
+    };
+
 AnimeResponse _$AnimeResponseFromJson(Map<String, dynamic> json) =>
     AnimeResponse(
       data: (json['data'] as List<dynamic>)
@@ -28,40 +44,40 @@ Map<String, dynamic> _$AnimeSummaryWrapperToJson(
 
 AnimeSummary _$AnimeSummaryFromJson(Map<String, dynamic> json) => AnimeSummary(
   alternativeTitles: AlternativeTitles.fromJson(
-    json['alternativeTitles'] as Map<String, dynamic>,
+    json['alternative_titles'] as Map<String, dynamic>,
   ),
-  averageEpisodeDuration: (json['averageEpisodeDuration'] as num).toInt(),
+  averageEpisodeDuration: (json['average_episode_duration'] as num).toInt(),
   background: json['background'] as String?,
   broadcast: json['broadcast'] == null
       ? null
       : Broadcast.fromJson(json['broadcast'] as Map<String, dynamic>),
-  createdAt: DateTime.parse(json['createdAt'] as String),
-  endDate: json['endDate'] as String?,
-  favoritesInfo: json['favoritesInfo'] == null
+  createdAt: DateTime.parse(json['created_at'] as String),
+  endDate: json['end_date'] as String?,
+  favoritesInfo: json['favorites_info'] == null
       ? null
-      : FavoriteInfo.fromJson(json['favoritesInfo'] as Map<String, dynamic>),
+      : FavoriteInfo.fromJson(json['favorites_info'] as Map<String, dynamic>),
   genres: (json['genres'] as List<dynamic>)
       .map((e) => Genre.fromJson(e as Map<String, dynamic>))
       .toList(),
   id: (json['id'] as num).toInt(),
   mainPicture: MainImageAsset.fromJson(
-    json['mainPicture'] as Map<String, dynamic>,
+    json['main_picture'] as Map<String, dynamic>,
   ),
   rating: (json['rating'] as num?)?.toDouble(),
-  mediaType: $enumDecode(_$AnimeTypeEnumMap, json['mediaType']),
-  numEpisodes: (json['numEpisodes'] as num).toInt(),
-  numFavorites: (json['numFavorites'] as num).toInt(),
-  numInLists: (json['numInLists'] as num).toInt(),
-  rankInLists: (json['rankInLists'] as num).toInt(),
+  mediaType: $enumDecode(_$AnimeTypeEnumMap, json['media_type']),
+  numEpisodes: (json['num_episodes'] as num).toInt(),
+  numFavorites: (json['num_favorites'] as num).toInt(),
+  numInLists: (json['num_in_lists'] as num).toInt(),
+  rankInLists: (json['rank_in_lists'] as num).toInt(),
   rank: (json['rank'] as num?)?.toInt(),
-  startDate: json['startDate'] as String?,
-  startSeason: json['startSeason'] == null
+  startDate: json['start_date'] as String?,
+  startSeason: json['start_season'] == null
       ? null
-      : Season.fromJson(json['startSeason'] as Map<String, dynamic>),
+      : Season.fromJson(json['start_season'] as Map<String, dynamic>),
   status: $enumDecodeNullable(_$AiringStatusEnumMap, json['status']),
   synopsis: json['synopsis'] as String,
   title: json['title'] as String,
-  updatedAt: DateTime.parse(json['updatedAt'] as String),
+  updatedAt: DateTime.parse(json['updated_at'] as String),
   ranking: json['ranking'] == null
       ? null
       : Ranking.fromJson(json['ranking'] as Map<String, dynamic>),
@@ -69,29 +85,29 @@ AnimeSummary _$AnimeSummaryFromJson(Map<String, dynamic> json) => AnimeSummary(
 
 Map<String, dynamic> _$AnimeSummaryToJson(AnimeSummary instance) =>
     <String, dynamic>{
-      'alternativeTitles': instance.alternativeTitles,
-      'averageEpisodeDuration': instance.averageEpisodeDuration,
+      'alternative_titles': instance.alternativeTitles,
+      'average_episode_duration': instance.averageEpisodeDuration,
       'background': instance.background,
       'broadcast': instance.broadcast,
-      'createdAt': instance.createdAt.toIso8601String(),
-      'endDate': instance.endDate,
-      'favoritesInfo': instance.favoritesInfo,
+      'created_at': instance.createdAt.toIso8601String(),
+      'end_date': instance.endDate,
+      'favorites_info': instance.favoritesInfo,
       'genres': instance.genres,
       'id': instance.id,
-      'mainPicture': instance.mainPicture,
+      'main_picture': instance.mainPicture,
       'rating': instance.rating,
-      'mediaType': _$AnimeTypeEnumMap[instance.mediaType]!,
-      'numEpisodes': instance.numEpisodes,
-      'numFavorites': instance.numFavorites,
-      'numInLists': instance.numInLists,
-      'rankInLists': instance.rankInLists,
+      'media_type': _$AnimeTypeEnumMap[instance.mediaType]!,
+      'num_episodes': instance.numEpisodes,
+      'num_favorites': instance.numFavorites,
+      'num_in_lists': instance.numInLists,
+      'rank_in_lists': instance.rankInLists,
       'rank': instance.rank,
-      'startDate': instance.startDate,
-      'startSeason': instance.startSeason,
+      'start_date': instance.startDate,
+      'start_season': instance.startSeason,
       'status': _$AiringStatusEnumMap[instance.status],
       'synopsis': instance.synopsis,
       'title': instance.title,
-      'updatedAt': instance.updatedAt.toIso8601String(),
+      'updated_at': instance.updatedAt.toIso8601String(),
       'ranking': instance.ranking,
     };
 

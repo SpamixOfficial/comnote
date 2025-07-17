@@ -38,13 +38,13 @@ Map<String, dynamic> _$AlternativeTitlesToJson(AlternativeTitles instance) =>
     };
 
 Broadcast _$BroadcastFromJson(Map<String, dynamic> json) => Broadcast(
-  dayOfTheWeek: $enumDecode(_$WeekDayEnumMap, json['dayOfTheWeek']),
-  startTime: DateTime.parse(json['startTime'] as String),
+  dayOfTheWeek: $enumDecode(_$WeekDayEnumMap, json['day_of_the_week']),
+  startTime: DateTime.parse(json['start_time'] as String),
 );
 
 Map<String, dynamic> _$BroadcastToJson(Broadcast instance) => <String, dynamic>{
-  'dayOfTheWeek': _$WeekDayEnumMap[instance.dayOfTheWeek]!,
-  'startTime': instance.startTime.toIso8601String(),
+  'day_of_the_week': _$WeekDayEnumMap[instance.dayOfTheWeek]!,
+  'start_time': instance.startTime.toIso8601String(),
 };
 
 const _$WeekDayEnumMap = {
@@ -58,10 +58,10 @@ const _$WeekDayEnumMap = {
 };
 
 FavoriteInfo _$FavoriteInfoFromJson(Map<String, dynamic> json) =>
-    FavoriteInfo(addedAt: DateTime.parse(json['addedAt'] as String));
+    FavoriteInfo(addedAt: DateTime.parse(json['added_at'] as String));
 
 Map<String, dynamic> _$FavoriteInfoToJson(FavoriteInfo instance) =>
-    <String, dynamic>{'addedAt': instance.addedAt.toIso8601String()};
+    <String, dynamic>{'added_at': instance.addedAt.toIso8601String()};
 
 Genre _$GenreFromJson(Map<String, dynamic> json) =>
     Genre(id: (json['id'] as num).toInt(), name: json['name'] as String);
@@ -103,10 +103,10 @@ const _$SeasonEnumEnumMap = {
 
 Ranking _$RankingFromJson(Map<String, dynamic> json) => Ranking(
   rank: (json['rank'] as num).toInt(),
-  previousRank: (json['previousRank'] as num?)?.toInt(),
+  previousRank: (json['previous_rank'] as num?)?.toInt(),
 );
 
 Map<String, dynamic> _$RankingToJson(Ranking instance) => <String, dynamic>{
   'rank': instance.rank,
-  'previousRank': instance.previousRank,
+  'previous_rank': instance.previousRank,
 };

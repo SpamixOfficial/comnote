@@ -1,5 +1,5 @@
-import 'dart:convert';
-
+import 'package:comnote/api.dart';
+import 'package:comnote/api/login.dart';
 import 'package:comnote/loginbrowser.dart';
 import 'dart:developer' as developer;
 import 'package:flutter/material.dart';
@@ -36,6 +36,7 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   int _counter = 0;
   final Loginbrowser _loginbrowser = Loginbrowser();
+  final MALApi apiClient = MALApi();
 
   void _incrementCounter() {
     setState(() {
@@ -60,8 +61,11 @@ class _MyHomePageState extends State<MyHomePage> {
               style: Theme.of(context).textTheme.headlineMedium,
             ),
             TextButton(onPressed: () async {
-              var resp = await _loginbrowser.openLogin();
-              developer.log("Code: ${resp.getOrThrow().code}, Verifier: ${resp.getOrThrow().verifier}");
+              var resp =(await _loginbrowser.openLogin()).getOrThrow();
+              developer.log("[LOGIN_BROWSER] Code: ${resp["code"]}, Verifier: ${resp["verifier"]}");
+              
+              var auth_resp = (await apiClient.login.oauthAction(verifier: resp["verifier"], action: OAuthAction.authorize, code: resp["code"])).getOrThrow();
+              developer.log("[AUTH] Token: ${auth_resp.accessToken}\nRefresh: ${auth_resp.refreshToken}\nExpires: ${auth_resp.expiresAt.toString()}");
             }, child: const Text("Pls click"))
           ],
         ),

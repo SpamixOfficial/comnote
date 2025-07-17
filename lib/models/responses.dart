@@ -3,12 +3,24 @@ import 'generic.dart';
 
 part 'responses.g.dart';
 
+@JsonSerializable(fieldRename: FieldRename.snake)
 class OAuthResponse {
-  final String code, verifier;
-  OAuthResponse(this.code, this.verifier);
+  final String accessToken, refreshToken;
+
+  @JsonKey(name: "expires_in", fromJson: _expiresAtFromMilliseconds)
+  DateTime expiresAt;
+
+  OAuthResponse(this.accessToken, this.refreshToken, this.expiresAt);
+
+  factory OAuthResponse.fromJson(Map<String, dynamic> json) =>
+      _$OAuthResponseFromJson(json);
+  Map<String, dynamic> toJson() => _$OAuthResponseToJson(this);
+
+  static DateTime _expiresAtFromMilliseconds(int ms) =>
+      DateTime.now().add(Duration(milliseconds: ms));
 }
 
-@JsonSerializable()
+@JsonSerializable(fieldRename: FieldRename.snake)
 class AnimeResponse {
   final List<AnimeSummaryWrapper> data;
   final ApiPaging paging;
@@ -20,7 +32,7 @@ class AnimeResponse {
   Map<String, dynamic> toJson() => _$AnimeResponseToJson(this);
 }
 
-@JsonSerializable()
+@JsonSerializable(fieldRename: FieldRename.snake)
 class AnimeSummaryWrapper {
   final AnimeSummary node;
 
@@ -31,7 +43,7 @@ class AnimeSummaryWrapper {
   Map<String, dynamic> toJson() => _$AnimeSummaryWrapperToJson(this);
 }
 
-@JsonSerializable()
+@JsonSerializable(fieldRename: FieldRename.snake)
 class AnimeSummary {
   final AlternativeTitles alternativeTitles;
   final int averageEpisodeDuration;
