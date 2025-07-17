@@ -1,4 +1,7 @@
+import 'dart:convert';
+
 import 'package:comnote/loginbrowser.dart';
+import 'dart:developer' as developer;
 import 'package:flutter/material.dart';
 
 void main() {
@@ -56,8 +59,9 @@ class _MyHomePageState extends State<MyHomePage> {
               '$_counter',
               style: Theme.of(context).textTheme.headlineMedium,
             ),
-            TextButton(onPressed: () {
-              _loginbrowser.openLogin();
+            TextButton(onPressed: () async {
+              var resp = await _loginbrowser.openLogin();
+              developer.log("Code: ${resp.getOrThrow().code}, Verifier: ${resp.getOrThrow().verifier}");
             }, child: const Text("Pls click"))
           ],
         ),
