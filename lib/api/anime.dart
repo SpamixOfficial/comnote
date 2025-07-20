@@ -4,7 +4,7 @@ import 'package:comnote/models/responses.dart';
 import 'package:dio/dio.dart';
 import 'package:result_dart/result_dart.dart';
 
-class AnimeApi {
+class AnimeApi extends BaseApi {
   final Dio dio;
 
   Future<ResultDart<AnimeResponse, ApiError>> getJustAdded({int limit = 10, int offset = 0}) async {

@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:comnote/api/anime.dart';
 import 'package:comnote/api/login.dart';
+import 'package:comnote/models/state.dart';
 import 'package:dio/dio.dart';
 import 'package:result_dart/result_dart.dart';
 
@@ -17,9 +18,18 @@ final dio = Dio(
     ),
   );
 
+abstract class BaseApi {
+  LoginState loginItem = LoginState(false, DateTime.fromMillisecondsSinceEpoch(0));
+}
+
 class MALApi {
   final AnimeApi anime = AnimeApi(dio);
   final LoginApi login = LoginApi(dio);
+
+  void setLoginState(LoginState state) {
+    anime.loginItem = state;
+    login.loginItem = state;
+  }
 }
 
 Future<ResultDart<ST, ET>> apiCall<ST extends Object, ET extends Object>(

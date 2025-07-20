@@ -12,9 +12,10 @@ enum OAuthAction {
   const OAuthAction(this.oauthString);
 }
 
-class LoginApi {
+class LoginApi extends BaseApi {
   final Dio dio;
 
+  /// refreshToken is optional if loginItem contains a valid refreshToken!
   Future<ResultDart<OAuthResponse, ApiError>> oauthAction({
     required String verifier,
     required OAuthAction action,
@@ -35,6 +36,7 @@ class LoginApi {
         form["code"] = code;
         break;
       case OAuthAction.refresh:
+        refreshToken = loginItem.refreshToken;
         refreshToken ?? (throw "Can't do refresh without a token!");
         form["refresh_token"] = refreshToken;
         break;
