@@ -18,7 +18,9 @@ class AppState {
 
 @JsonSerializable()
 class LoginState {
+  @JsonKey(includeFromJson: false, includeToJson: false)
   String? token, refreshToken;
+  
   bool loggedIn;
 
   DateTime expires;

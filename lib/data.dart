@@ -6,6 +6,7 @@ import 'package:comnote/api/login.dart';
 import 'package:comnote/models/state.dart';
 
 import 'package:flutter/foundation.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'dart:developer' as developer;
 
 import 'package:result_dart/result_dart.dart';
@@ -15,6 +16,7 @@ class PreferencesHandler extends ChangeNotifier {
   AppState state = AppState();
   final MALApi apiClient = MALApi();
   File? stateFile;
+  FlutterSecureStorage? storage;
 
   bool get loggedIn => state.login.loggedIn;
 
@@ -57,6 +59,12 @@ class PreferencesHandler extends ChangeNotifier {
     return Success(stateFile!); // should be safe
   }
 
+  Result<FlutterSecureStorage> get_storage() {
+    storage ??= FlutterSecureStorage();
+
+    return Success(storage!);
+  }
+
   Future<Result<()>> load_data() async {
     File sFile = (await get_statefile()).getOrThrow();
     var contents = await sFile.readAsString();
@@ -64,6 +72,11 @@ class PreferencesHandler extends ChangeNotifier {
     state = AppState.fromJson(jsonContents);
 
     if (state.login.loggedIn) {
+      Map<String, String> storageVals = await (get_storage().getOrThrow())
+          .readAll();
+      state.login.token = storageVals["token"];
+      state.login.refreshToken = storageVals["refreshToken"];
+
       apiClient.setLoginState(state.login);
     }
 
@@ -73,8 +86,12 @@ class PreferencesHandler extends ChangeNotifier {
   Future<Result<()>> save_data() async {
     File sFile = (await get_statefile()).getOrThrow();
     var contents = state.toJson();
+    var st = get_storage().getOrThrow();
 
     stateFile = await sFile.writeAsString(jsonEncode(contents));
+    st.write(key: "token", value: state.login.token);
+    st.write(key: "refreshToken", value: state.login.refreshToken);
+    
     return Success(());
   }
 }
