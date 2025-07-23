@@ -42,6 +42,8 @@ class PreferencesHandler extends ChangeNotifier {
     state.login.refreshToken = authRespValue.refreshToken;
     state.login.token = authRespValue.accessToken;
 
+    (await save_data()).getOrThrow();
+
     apiClient.setLoginState(state.login);
 
     notifyListeners();
@@ -68,16 +70,21 @@ class PreferencesHandler extends ChangeNotifier {
   Future<Result<()>> load_data() async {
     File sFile = (await get_statefile()).getOrThrow();
     var contents = await sFile.readAsString();
-    var jsonContents = jsonDecode(contents);
-    state = AppState.fromJson(jsonContents);
 
-    if (state.login.loggedIn) {
-      Map<String, String> storageVals = await (get_storage().getOrThrow())
-          .readAll();
-      state.login.token = storageVals["token"];
-      state.login.refreshToken = storageVals["refreshToken"];
+    if (contents.isNotEmpty) {
+      var jsonContents = jsonDecode(contents);
+      state = AppState.fromJson(jsonContents);
 
-      apiClient.setLoginState(state.login);
+      if (state.login.loggedIn) {
+        Map<String, String> storageVals = await (get_storage().getOrThrow())
+            .readAll();
+        state.login.token = storageVals["token"];
+        state.login.refreshToken = storageVals["refreshToken"];
+
+        apiClient.setLoginState(state.login);
+      }
+
+      notifyListeners();
     }
 
     return Success(());
@@ -89,9 +96,11 @@ class PreferencesHandler extends ChangeNotifier {
     var st = get_storage().getOrThrow();
 
     stateFile = await sFile.writeAsString(jsonEncode(contents));
-    st.write(key: "token", value: state.login.token);
-    st.write(key: "refreshToken", value: state.login.refreshToken);
-    
+    if (state.login.loggedIn) {
+      st.write(key: "token", value: state.login.token);
+      st.write(key: "refreshToken", value: state.login.refreshToken);
+    }
+
     return Success(());
   }
 }

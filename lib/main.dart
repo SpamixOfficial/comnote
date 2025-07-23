@@ -1,5 +1,7 @@
 import 'package:comnote/data.dart';
 import 'package:comnote/loginbrowser.dart';
+import 'package:comnote/ui/components.dart';
+import 'package:comnote/ui/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -20,9 +22,8 @@ class App extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Flutter Demo',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-      ),
+      theme: comLight,
+      darkTheme: comDark,
       home: const HomePage(title: 'Flutter Demo Home Page'),
     );
   }
@@ -38,27 +39,26 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  int _counter = 0;
   final Loginbrowser _loginbrowser = Loginbrowser();
 
-  void _incrementCounter() {
-    setState(() {
-      _counter++;
-    });
+
+  @override
+  void initState() {
+    super.initState();
+    Provider.of<PreferencesHandler>(context, listen: false).load_data();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+        backgroundColor: Theme.of(context).colorScheme.surfaceDim,
         title: Text(widget.title),
       ),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            const Text('You have pushed the button this many times:'),
             Consumer<PreferencesHandler>(
               builder: (context, state, child) {
                 if (!state.state.login.loggedIn) {
@@ -67,25 +67,19 @@ class _HomePageState extends State<HomePage> {
                 return const Text("Woah you're actually logged in!?");
               },
             ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headlineMedium,
-            ),
-            TextButton(
+            ComButton(
               onPressed: () async {
                 var resp = (await _loginbrowser.openLogin()).getOrThrow();
-                await Provider.of<PreferencesHandler>(context, listen: false).login(resp);
+                await Provider.of<PreferencesHandler>(
+                  context,
+                  listen: false,
+                ).login(resp);
               },
-              child: const Text("Pls click"),
+              content: "Pls click",
             ),
           ],
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
 }
