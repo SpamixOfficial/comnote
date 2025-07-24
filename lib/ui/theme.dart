@@ -4,11 +4,26 @@ import 'package:flutter/material.dart';
 class ComThemeExtension extends ThemeExtension<ComThemeExtension> {
   final Color? textShadowColor;
 
-  const ComThemeExtension({required this.textShadowColor});
+  final List<Color>? topBarGradientColors;
+  final Color? topBarBorderColor;
+
+  const ComThemeExtension({
+    required this.textShadowColor,
+    required this.topBarGradientColors,
+    required this.topBarBorderColor
+  });
 
   @override
-  ThemeExtension<ComThemeExtension> copyWith({Color? textShadowColor}) {
-    return ComThemeExtension(textShadowColor: textShadowColor);
+  ThemeExtension<ComThemeExtension> copyWith({
+    Color? textShadowColor,
+    List<Color>? topBarGradientColors,
+    Color? topBarBorderColor
+  }) {
+    return ComThemeExtension(
+      textShadowColor: textShadowColor,
+      topBarGradientColors: topBarGradientColors,
+      topBarBorderColor: topBarBorderColor
+    );
   }
 
   @override
@@ -16,13 +31,14 @@ class ComThemeExtension extends ThemeExtension<ComThemeExtension> {
     covariant ThemeExtension<ComThemeExtension>? other,
     double t,
   ) {
-    // TODO: implement lerp
     if (other is! ComThemeExtension) {
       return this;
     }
 
     return ComThemeExtension(
       textShadowColor: Color.lerp(textShadowColor, other.textShadowColor, t),
+      topBarGradientColors: other.topBarGradientColors, // lazy
+      topBarBorderColor: Color.lerp(topBarBorderColor, other.topBarBorderColor, t)
     );
   }
 }
@@ -41,7 +57,13 @@ final comLight = ThemeData(
     surfaceDim: Color(0xffe4e4e7),
     surfaceBright: Color(0xfff8f8f8),
   ),
-  extensions: [const ComThemeExtension(textShadowColor: Color(0x4D000000))],
+  extensions: [
+    const ComThemeExtension(
+      textShadowColor: Color(0x4D000000),
+      topBarGradientColors: [Color(0xfff2f2f2)],
+      topBarBorderColor: Color(0xff9D9DA8)
+    ),
+  ],
 );
 
 /*
@@ -95,5 +117,11 @@ final comDark = ThemeData(
     surfaceDim: Color(0xff010515),
     surfaceBright: Color(0xff1a273a),
   ),
-  extensions: [const ComThemeExtension(textShadowColor: Color(0x4D000000))],
+  extensions: [
+    const ComThemeExtension(
+      textShadowColor: Color(0x4D000000),
+      topBarGradientColors: [Color(0xff001878), Color(0xff010515)],
+      topBarBorderColor: Color(0xff00D3BB)
+    ),
+  ],
 );

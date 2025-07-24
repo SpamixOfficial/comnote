@@ -1,60 +1,29 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:comnote/api.dart';
-import 'package:comnote/api/login.dart';
+import 'package:comnote/commands.dart';
 import 'package:comnote/models/state.dart';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'dart:developer' as developer;
 
 import 'package:result_dart/result_dart.dart';
 import 'package:path_provider/path_provider.dart';
 
-class PreferencesHandler extends ChangeNotifier {
+class AppHandler extends ChangeNotifier {
   AppState state = AppState();
-  final MALApi apiClient = MALApi();
+  Commands commands = Commands();
   File? stateFile;
   FlutterSecureStorage? storage;
 
   bool get loggedIn => state.login.loggedIn;
 
-  Future<bool> login(Map<String, dynamic> loginBrowserResponse) async {
-    developer.log(
-      "[LOGIN_BROWSER] Code: ${loginBrowserResponse["code"]}, Verifier: ${loginBrowserResponse["verifier"]}",
-    );
-
-    var authResp = await apiClient.login.oauthAction(
-      verifier: loginBrowserResponse["verifier"],
-      action: OAuthAction.authorize,
-      code: loginBrowserResponse["code"],
-    );
-
-    if (authResp.isError()) {
-      state.login.loggedIn = false;
-      return false;
-    }
-
-    var authRespValue = authResp.getOrThrow();
-    state.login.loggedIn = true;
-    state.login.expires = authRespValue.expiresAt;
-    state.login.refreshToken = authRespValue.refreshToken;
-    state.login.token = authRespValue.accessToken;
-
-    (await save_data()).getOrThrow();
-
-    apiClient.setLoginState(state.login);
-
-    notifyListeners();
-
-    return true;
-  }
+  /* ---------- Statefile function ---------- */
 
   Future<Result<File>> get_statefile() async {
     if (stateFile == null) {
       var docPath = (await getApplicationDocumentsDirectory()).path;
-      File f = File("${docPath}/state.json");
+      File f = File("$docPath/state.json");
       stateFile = f;
     }
 
@@ -81,7 +50,7 @@ class PreferencesHandler extends ChangeNotifier {
         state.login.token = storageVals["token"];
         state.login.refreshToken = storageVals["refreshToken"];
 
-        apiClient.setLoginState(state.login);
+        commands.apiClient.setLoginState(state.login);
       }
 
       notifyListeners();
@@ -102,5 +71,19 @@ class PreferencesHandler extends ChangeNotifier {
     }
 
     return Success(());
+  }
+
+  /* ---------- Commands ---------- */
+
+  Future<bool> login(Map<String, dynamic> loginBrowserResponse) async {
+    var res = await commands.login(state, loginBrowserResponse);
+
+    if (res) {
+      (await save_data()).getOrThrow();
+
+      notifyListeners();
+    }
+
+    return res;
   }
 }

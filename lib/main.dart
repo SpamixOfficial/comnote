@@ -8,7 +8,7 @@ import 'package:provider/provider.dart';
 void main() {
   runApp(
     ChangeNotifierProvider(
-      create: (context) => PreferencesHandler(),
+      create: (context) => AppHandler(),
       child: const App(),
     ),
   );
@@ -29,6 +29,15 @@ class App extends StatelessWidget {
   }
 }
 
+List<TopBarEntry> topBarEntries = [
+  TopBarEntry(
+    label: "Top 10 Airing",
+    onSelected: (TopBarEntry val) {
+      print(val);
+    },
+  ),
+];
+
 class HomePage extends StatefulWidget {
   const HomePage({super.key, required this.title});
 
@@ -41,25 +50,22 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   final Loginbrowser _loginbrowser = Loginbrowser();
 
-
   @override
   void initState() {
     super.initState();
-    Provider.of<PreferencesHandler>(context, listen: false).load_data();
+    Provider.of<AppHandler>(context, listen: false).load_data();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.surfaceDim,
-        title: Text(widget.title),
-      ),
+      backgroundColor: Theme.of(context).colorScheme.surfaceDim,
+      appBar: TopBar(entries: topBarEntries),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            Consumer<PreferencesHandler>(
+            Consumer<AppHandler>(
               builder: (context, state, child) {
                 if (!state.state.login.loggedIn) {
                   return const Text("You're not logged in!");
@@ -70,7 +76,7 @@ class _HomePageState extends State<HomePage> {
             ComButton(
               onPressed: () async {
                 var resp = (await _loginbrowser.openLogin()).getOrThrow();
-                await Provider.of<PreferencesHandler>(
+                await Provider.of<AppHandler>(
                   context,
                   listen: false,
                 ).login(resp);
