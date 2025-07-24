@@ -2,8 +2,11 @@ import 'package:comnote/data.dart';
 import 'package:comnote/loginbrowser.dart';
 import 'package:comnote/ui/components.dart';
 import 'package:comnote/ui/theme.dart';
+
 import 'package:flutter/material.dart';
+
 import 'package:provider/provider.dart';
+import 'package:go_router/go_router.dart';
 
 void main() {
   runApp(
@@ -14,17 +17,22 @@ void main() {
   );
 }
 
+// GoRouter Config
+final _router = GoRouter(
+  routes: [GoRoute(path: '/', builder: (context, state) => HomePage())],
+);
+
 class App extends StatelessWidget {
   const App({super.key});
 
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
+    return MaterialApp.router(
+      title: 'ComNote',
       theme: comLight,
       darkTheme: comDark,
-      home: const HomePage(title: 'Flutter Demo Home Page'),
+      routerConfig: _router,
     );
   }
 }
@@ -36,12 +44,54 @@ List<TopBarEntry> topBarEntries = [
       print(val);
     },
   ),
+  TopBarEntry(
+    label: "Just Added",
+    onSelected: (TopBarEntry val) {
+      print(val);
+    },
+  ),
+];
+
+List<NavItem> navBarEntries = [
+  NavItem(
+    type: NavItemType.settings,
+    onSelected: (NavItemType val) {
+      print(val);
+    },
+    icon: Icon(Icons.settings, size: 48.0),
+  ),
+  NavItem(
+    type: NavItemType.community,
+    onSelected: (NavItemType val) {
+      print(val);
+    },
+    icon: Icon(Icons.groups, size: 48.0),
+  ),
+  NavItem(
+    type: NavItemType.home,
+    onSelected: (NavItemType val) {
+      print(val);
+    },
+    icon: Icon(Icons.home, size: 48.0),
+  ),
+  NavItem(
+    type: NavItemType.search,
+    onSelected: (NavItemType val) {
+      print(val);
+    },
+    icon: Icon(Icons.search, size: 48.0),
+  ),
+  NavItem(
+    type: NavItemType.lists,
+    onSelected: (NavItemType val) {
+      print(val);
+    },
+    icon: Icon(Icons.format_list_bulleted, size: 48.0),
+  ),
 ];
 
 class HomePage extends StatefulWidget {
-  const HomePage({super.key, required this.title});
-
-  final String title;
+  const HomePage({super.key});
 
   @override
   State<HomePage> createState() => _HomePageState();
@@ -61,6 +111,10 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.surfaceDim,
       appBar: TopBar(entries: topBarEntries),
+      bottomNavigationBar: BottomNavBar(
+        navigationItems: navBarEntries,
+        initialItemIndex: 2,
+      ),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,

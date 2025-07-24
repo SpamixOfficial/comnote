@@ -7,22 +7,31 @@ class ComThemeExtension extends ThemeExtension<ComThemeExtension> {
   final List<Color>? topBarGradientColors;
   final Color? topBarBorderColor;
 
+  final List<Color>? navBarGradientColors;
+  final Color? navBarBorderColor;
+
   const ComThemeExtension({
     required this.textShadowColor,
     required this.topBarGradientColors,
-    required this.topBarBorderColor
+    required this.topBarBorderColor,
+    required this.navBarGradientColors,
+    required this.navBarBorderColor,
   });
 
   @override
   ThemeExtension<ComThemeExtension> copyWith({
     Color? textShadowColor,
     List<Color>? topBarGradientColors,
-    Color? topBarBorderColor
+    Color? topBarBorderColor,
+    List<Color>? navBarGradientColors,
+    Color? navBarBorderColor,
   }) {
     return ComThemeExtension(
       textShadowColor: textShadowColor,
       topBarGradientColors: topBarGradientColors,
-      topBarBorderColor: topBarBorderColor
+      topBarBorderColor: topBarBorderColor,
+      navBarBorderColor: navBarBorderColor,
+      navBarGradientColors: navBarGradientColors,
     );
   }
 
@@ -38,7 +47,17 @@ class ComThemeExtension extends ThemeExtension<ComThemeExtension> {
     return ComThemeExtension(
       textShadowColor: Color.lerp(textShadowColor, other.textShadowColor, t),
       topBarGradientColors: other.topBarGradientColors, // lazy
-      topBarBorderColor: Color.lerp(topBarBorderColor, other.topBarBorderColor, t)
+      topBarBorderColor: Color.lerp(
+        topBarBorderColor,
+        other.topBarBorderColor,
+        t,
+      ),
+      navBarGradientColors: other.navBarGradientColors,
+      navBarBorderColor: Color.lerp(
+        navBarBorderColor,
+        other.navBarBorderColor,
+        t,
+      ),
     );
   }
 }
@@ -60,8 +79,10 @@ final comLight = ThemeData(
   extensions: [
     const ComThemeExtension(
       textShadowColor: Color(0x4D000000),
-      topBarGradientColors: [Color(0xfff2f2f2)],
-      topBarBorderColor: Color(0xff9D9DA8)
+      topBarGradientColors: [Color(0xfff2f2f2), Color(0xfff2f2f2)],
+      topBarBorderColor: Color(0xff9D9DA8),
+      navBarGradientColors: [Color(0xffF8F8F8), Color(0xff18181B)],
+      navBarBorderColor: Color(0x00F8F8F8),
     ),
   ],
 );
@@ -121,7 +142,9 @@ final comDark = ThemeData(
     const ComThemeExtension(
       textShadowColor: Color(0x4D000000),
       topBarGradientColors: [Color(0xff001878), Color(0xff010515)],
-      topBarBorderColor: Color(0xff00D3BB)
+      topBarBorderColor: Color(0xff00D3BB),
+      navBarGradientColors: [Color(0xff010529), Color(0xff001878)],
+      navBarBorderColor: Color(0xff1a273a),
     ),
   ],
 );

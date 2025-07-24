@@ -38,22 +38,27 @@ class AppHandler extends ChangeNotifier {
 
   Future<Result<()>> load_data() async {
     File sFile = (await get_statefile()).getOrThrow();
-    var contents = await sFile.readAsString();
+    
+    try {
+      var contents = await sFile.readAsString();
 
-    if (contents.isNotEmpty) {
-      var jsonContents = jsonDecode(contents);
-      state = AppState.fromJson(jsonContents);
+      if (contents.isNotEmpty) {
+        var jsonContents = jsonDecode(contents);
+        state = AppState.fromJson(jsonContents);
 
-      if (state.login.loggedIn) {
-        Map<String, String> storageVals = await (get_storage().getOrThrow())
-            .readAll();
-        state.login.token = storageVals["token"];
-        state.login.refreshToken = storageVals["refreshToken"];
+        if (state.login.loggedIn) {
+          Map<String, String> storageVals = await (get_storage().getOrThrow())
+              .readAll();
+          state.login.token = storageVals["token"];
+          state.login.refreshToken = storageVals["refreshToken"];
 
-        commands.apiClient.setLoginState(state.login);
+          commands.apiClient.setLoginState(state.login);
+        }
+
+        notifyListeners();
       }
-
-      notifyListeners();
+    } on Exception catch (e) {
+      return Failure(e);
     }
 
     return Success(());
@@ -61,13 +66,18 @@ class AppHandler extends ChangeNotifier {
 
   Future<Result<()>> save_data() async {
     File sFile = (await get_statefile()).getOrThrow();
-    var contents = state.toJson();
-    var st = get_storage().getOrThrow();
 
-    stateFile = await sFile.writeAsString(jsonEncode(contents));
-    if (state.login.loggedIn) {
-      st.write(key: "token", value: state.login.token);
-      st.write(key: "refreshToken", value: state.login.refreshToken);
+    try {
+      var contents = state.toJson();
+      var st = get_storage().getOrThrow();
+
+      stateFile = await sFile.writeAsString(jsonEncode(contents));
+      if (state.login.loggedIn) {
+        st.write(key: "token", value: state.login.token);
+        st.write(key: "refreshToken", value: state.login.refreshToken);
+      }
+    } on Exception catch (e) {
+      return Failure(e);
     }
 
     return Success(());
