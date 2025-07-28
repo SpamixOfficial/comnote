@@ -19,7 +19,44 @@ void main() {
 
 // GoRouter Config
 final _router = GoRouter(
-  routes: [GoRoute(path: '/', builder: (context, state) => HomePage())],
+  initialLocation: "/home",
+  routes: [
+    ShellRoute(
+      builder: (context, state, child) {
+        return Scaffold(
+          backgroundColor: Theme.of(context).colorScheme.surfaceDim,
+          appBar: TopBar(entries: topBarEntries),
+          bottomNavigationBar: BottomNavBar(
+            navigationItems: navBarEntries,
+            initialItemIndex: 2,
+          ),
+          body: child,
+        );
+      },
+      routes: [
+        GoRoute(
+          path: "/home",
+          pageBuilder: (context, state) {
+            return fadeTransition(
+              child: HomePage(),
+              state: state,
+              context: context,
+            );
+          },
+        ),
+        GoRoute(
+          path: "/settings",
+          pageBuilder: (context, state) {
+            return fadeTransition(
+              child: SettingsPage(),
+              state: state,
+              context: context,
+            );
+          },
+        ),
+      ],
+    ),
+  ],
 );
 
 class App extends StatelessWidget {
@@ -56,37 +93,37 @@ List<NavItem> navBarEntries = [
   NavItem(
     type: NavItemType.settings,
     onSelected: (NavItemType val) {
-      print(val);
+      _router.go("/settings");
     },
-    icon: Icon(Icons.settings, size: 48.0),
+    icon: Icons.settings,
   ),
   NavItem(
     type: NavItemType.community,
     onSelected: (NavItemType val) {
       print(val);
     },
-    icon: Icon(Icons.groups, size: 48.0),
+    icon: Icons.groups,
   ),
   NavItem(
     type: NavItemType.home,
     onSelected: (NavItemType val) {
-      print(val);
+      _router.go("/home");
     },
-    icon: Icon(Icons.home, size: 48.0),
+    icon: Icons.home,
   ),
   NavItem(
     type: NavItemType.search,
     onSelected: (NavItemType val) {
       print(val);
     },
-    icon: Icon(Icons.search, size: 48.0),
+    icon: Icons.search,
   ),
   NavItem(
     type: NavItemType.lists,
     onSelected: (NavItemType val) {
       print(val);
     },
-    icon: Icon(Icons.format_list_bulleted, size: 48.0),
+    icon: Icons.format_list_bulleted,
   ),
 ];
 
@@ -108,37 +145,53 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Theme.of(context).colorScheme.surfaceDim,
-      appBar: TopBar(entries: topBarEntries),
-      bottomNavigationBar: BottomNavBar(
-        navigationItems: navBarEntries,
-        initialItemIndex: 2,
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          Consumer<AppHandler>(
+            builder: (context, state, child) {
+              if (!state.state.login.loggedIn) {
+                return const Text("You're not logged in!");
+              }
+              return const Text("Woah you're actually logged in!?");
+            },
+          ),
+          ComButton(
+            onPressed: () async {
+              var resp = (await _loginbrowser.openLogin()).getOrThrow();
+              await Provider.of<AppHandler>(context, listen: false).login(resp);
+            },
+            content: "Pls click",
+          ),
+        ],
       ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Consumer<AppHandler>(
-              builder: (context, state, child) {
-                if (!state.state.login.loggedIn) {
-                  return const Text("You're not logged in!");
-                }
-                return const Text("Woah you're actually logged in!?");
-              },
-            ),
-            ComButton(
-              onPressed: () async {
-                var resp = (await _loginbrowser.openLogin()).getOrThrow();
-                await Provider.of<AppHandler>(
-                  context,
-                  listen: false,
-                ).login(resp);
-              },
-              content: "Pls click",
-            ),
-          ],
-        ),
+    );
+  }
+}
+
+class SettingsPage extends StatefulWidget {
+  const SettingsPage({super.key});
+
+  @override
+  State<SettingsPage> createState() => _SettingsPageState();
+}
+
+class _SettingsPageState extends State<SettingsPage> {
+  final Loginbrowser _loginbrowser = Loginbrowser();
+
+  @override
+  void initState() {
+    super.initState();
+    Provider.of<AppHandler>(context, listen: false).load_data();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[const Text("Rich bitch")],
       ),
     );
   }

@@ -75,6 +75,7 @@ final comLight = ThemeData(
     onSurface: Color(0xff18181b),
     surfaceDim: Color(0xffe4e4e7),
     surfaceBright: Color(0xfff8f8f8),
+    tertiary: Color(0xff00D3BB)
   ),
   extensions: [
     const ComThemeExtension(
@@ -137,6 +138,7 @@ final comDark = ThemeData(
     onSurface: Color(0xffeef2f6),
     surfaceDim: Color(0xff010515),
     surfaceBright: Color(0xff1a273a),
+    tertiary: Color(0xff135bf9)
   ),
   extensions: [
     const ComThemeExtension(

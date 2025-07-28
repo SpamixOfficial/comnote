@@ -1,6 +1,7 @@
 import 'package:comnote/main.dart';
 import 'package:comnote/ui/theme.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 class RecommendationCard extends StatefulWidget {
   const RecommendationCard({super.key});
@@ -232,7 +233,7 @@ class NavItem {
   void Function(NavItemType) onSelected;
 
   final NavItemType type;
-  final Icon icon;
+  final IconData icon;
   NavItem({required this.type, required this.icon, required this.onSelected});
 }
 
@@ -252,21 +253,57 @@ class BottomNavBar extends StatefulWidget {
 }
 
 class _BottomNavBarState extends State<BottomNavBar> {
-  late NavItem _currentChosenItem;
+  late NavItemType _currentChosenItem;
 
   @override
   void initState() {
     super.initState();
-    _currentChosenItem = widget.navigationItems[widget.initialItemIndex];
+    _currentChosenItem = widget.navigationItems[widget.initialItemIndex].type;
   }
 
   @override
   Widget build(BuildContext context) {
     ThemeData theme = Theme.of(context);
+    var selectedColor = Theme.of(context).colorScheme.tertiary;
     ComThemeExtension? ext = Theme.of(context).extension<ComThemeExtension>();
+
+    List<IconButton> barButtons = widget.navigationItems.map<IconButton>((x) {
+      var shadows = _currentChosenItem == x.type
+          ? [
+              Shadow(
+                color: Colors.black.withAlpha(179),
+                blurRadius: 10.0,
+                offset: Offset(0, 4),
+              ),
+              Shadow(
+                color: selectedColor,
+                blurRadius: 20.0,
+                offset: Offset(0, 0),
+              ),
+            ]
+          : [
+              Shadow(
+                color: Colors.black.withAlpha(179),
+                blurRadius: 10.0,
+                offset: Offset(0, 4),
+              ),
+            ];
+
+      return IconButton(
+        iconSize: 25.0,
+        onPressed: () {
+          setState(() {
+            _currentChosenItem = x.type;
+          });
+          x.onSelected(x.type);
+        },
+        icon: Icon(x.icon, shadows: shadows, color: Colors.white),
+      );
+    }).toList();
 
     return Container(
       height: 70,
+      padding: EdgeInsets.only(left: 10.0, right: 10.0),
       decoration: BoxDecoration(
         gradient: LinearGradient(
           begin: Alignment.topCenter,
@@ -292,9 +329,32 @@ class _BottomNavBarState extends State<BottomNavBar> {
         mainAxisSize: MainAxisSize.min,
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         crossAxisAlignment: CrossAxisAlignment.center,
-        spacing: 20.0,
-        children: [], // TODO: HERE!!
+        children: barButtons,
       ),
     );
   }
+}
+
+CustomTransitionPage fadeTransition({
+  required Widget child,
+  required GoRouterState state,
+  required BuildContext context,
+}) {
+  return CustomTransitionPage(
+    key: state.pageKey,
+    child: child,
+    transitionDuration: const Duration(milliseconds: 150),
+    transitionsBuilder:
+        (
+          BuildContext context,
+          Animation<double> animation,
+          Animation<double> secondaryAnimation,
+          Widget child,
+        ) {
+          return FadeTransition(
+            opacity: CurveTween(curve: Curves.easeInOut).animate(animation),
+            child: child,
+          );
+        },
+  );
 }
