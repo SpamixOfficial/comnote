@@ -7,6 +7,8 @@ class ComThemeExtension extends ThemeExtension<ComThemeExtension> {
   final List<Color>? topBarGradientColors;
   final Color? topBarBorderColor;
 
+  final List<Color>? homeBarGradientColors;
+
   final List<Color>? navBarGradientColors;
   final Color? navBarBorderColor;
 
@@ -14,6 +16,7 @@ class ComThemeExtension extends ThemeExtension<ComThemeExtension> {
     required this.textShadowColor,
     required this.topBarGradientColors,
     required this.topBarBorderColor,
+    required this.homeBarGradientColors,
     required this.navBarGradientColors,
     required this.navBarBorderColor,
   });
@@ -30,6 +33,7 @@ class ComThemeExtension extends ThemeExtension<ComThemeExtension> {
       textShadowColor: textShadowColor,
       topBarGradientColors: topBarGradientColors,
       topBarBorderColor: topBarBorderColor,
+      homeBarGradientColors: homeBarGradientColors,
       navBarBorderColor: navBarBorderColor,
       navBarGradientColors: navBarGradientColors,
     );
@@ -52,6 +56,8 @@ class ComThemeExtension extends ThemeExtension<ComThemeExtension> {
         other.topBarBorderColor,
         t,
       ),
+
+      homeBarGradientColors: other.homeBarGradientColors,
       navBarGradientColors: other.navBarGradientColors,
       navBarBorderColor: Color.lerp(
         navBarBorderColor,
@@ -75,13 +81,14 @@ final comLight = ThemeData(
     onSurface: Color(0xff18181b),
     surfaceDim: Color(0xffe4e4e7),
     surfaceBright: Color(0xfff8f8f8),
-    tertiary: Color(0xff00D3BB)
+    tertiary: Color(0xff00D3BB),
   ),
   extensions: [
     const ComThemeExtension(
       textShadowColor: Color(0x4D000000),
       topBarGradientColors: [Color(0xfff2f2f2), Color(0xfff2f2f2)],
       topBarBorderColor: Color(0xff9D9DA8),
+      homeBarGradientColors: [Color(0xe818181b), Color(0x00f8f8f8)],
       navBarGradientColors: [Color(0xffF8F8F8), Color(0xff18181B)],
       navBarBorderColor: Color(0x00F8F8F8),
     ),
@@ -138,13 +145,14 @@ final comDark = ThemeData(
     onSurface: Color(0xffeef2f6),
     surfaceDim: Color(0xff010515),
     surfaceBright: Color(0xff1a273a),
-    tertiary: Color(0xff135bf9)
+    tertiary: Color(0xff135bf9),
   ),
   extensions: [
     const ComThemeExtension(
       textShadowColor: Color(0x4D000000),
       topBarGradientColors: [Color(0xff001878), Color(0xff010515)],
       topBarBorderColor: Color(0xff00D3BB),
+      homeBarGradientColors: [Color(0xff001878), Color(0xff010515)],
       navBarGradientColors: [Color(0xff010529), Color(0xff001878)],
       navBarBorderColor: Color(0xff1a273a),
     ),

@@ -4,7 +4,19 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 class RecommendationCard extends StatefulWidget {
-  const RecommendationCard({super.key});
+  final String title, description;
+  final int rank, popularity;
+  final double rating;
+  final Uri poster;
+  const RecommendationCard({
+    super.key,
+    required this.title,
+    required this.description,
+    required this.popularity,
+    required this.poster,
+    required this.rank,
+    required this.rating,
+  });
 
   @override
   State<RecommendationCard> createState() => _RecommendationCardState();
@@ -97,17 +109,23 @@ class ComButton extends StatelessWidget {
   }
 }
 
-class TopBarEntry {
-  void Function(TopBarEntry) onSelected;
+class TopBarEntry<T> {
+  void Function(TopBarEntry, BuildContext) onSelected;
 
+  T value;
   String label;
-  TopBarEntry({required this.label, required this.onSelected});
+  TopBarEntry({
+    required this.label,
+    required this.onSelected,
+    required this.value,
+  });
 }
 
 class TopBar extends StatefulWidget implements PreferredSizeWidget {
   final List<TopBarEntry> entries;
+  final bool homeBar;
 
-  const TopBar({super.key, required this.entries});
+  const TopBar({super.key, required this.entries, required this.homeBar});
 
   @override
   State<TopBar> createState() => _TopBarState();
@@ -129,25 +147,54 @@ class _TopBarState extends State<TopBar> {
   @override
   Widget build(BuildContext context) {
     ThemeData theme = Theme.of(context);
-    ComThemeExtension? ext = Theme.of(context).extension<ComThemeExtension>();
+    ComThemeExtension ext = Theme.of(context).extension<ComThemeExtension>()!;
 
+    if (widget.homeBar) {
+      return buildHomeBar(context, theme, ext);
+    } else {
+      return buildNormalBar(context, theme, ext);
+    }
+  }
+
+  Widget buildNormalBar(
+    BuildContext context,
+    ThemeData theme,
+    ComThemeExtension ext,
+  ) {
     return Container(
       height: widget.preferredSize.height,
       decoration: BoxDecoration(
         gradient: LinearGradient(
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
-          colors: ext?.topBarGradientColors ?? [],
+          colors: ext.homeBarGradientColors ?? [],
+        ),
+      ),
+    );
+  }
+
+  Widget buildHomeBar(
+    BuildContext context,
+    ThemeData theme,
+    ComThemeExtension ext,
+  ) {
+    return Container(
+      height: widget.preferredSize.height,
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: ext.topBarGradientColors ?? [],
         ),
         border: Border(
           bottom: BorderSide(
-            color: ext?.topBarBorderColor ?? theme.colorScheme.primary,
+            color: ext.topBarBorderColor ?? theme.colorScheme.primary,
             width: 4.0,
           ),
         ),
         boxShadow: [
           BoxShadow(
-            color: ext?.topBarBorderColor?.withAlpha(127) ?? Color(0xff000000),
+            color: ext.topBarBorderColor?.withAlpha(127) ?? Color(0xff000000),
             blurRadius: 10,
             offset: Offset(0, 4),
             spreadRadius: 0,
@@ -178,7 +225,7 @@ class _TopBarState extends State<TopBar> {
                 _currentItemSelected = v;
               });
 
-              v.onSelected(v);
+              v.onSelected(v, context);
             },
             offset: Offset(-15, 30),
             shape: RoundedRectangleBorder(
@@ -187,13 +234,13 @@ class _TopBarState extends State<TopBar> {
                 bottomRight: Radius.circular(15),
               ),
               side: BorderSide(
-                color: ext?.topBarBorderColor ?? theme.colorScheme.primary,
+                color: ext.topBarBorderColor ?? theme.colorScheme.primary,
                 width: 4.0,
               ),
             ),
             shadowColor:
-                ext?.topBarBorderColor?.withAlpha(127) ?? Color(0xff000000),
-            color: ext?.topBarGradientColors?.last ?? Color(0xff000000),
+                ext.topBarBorderColor?.withAlpha(127) ?? Color(0xff000000),
+            color: ext.topBarGradientColors?.last ?? Color(0xff000000),
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: <Widget>[
@@ -236,8 +283,6 @@ class NavItem {
   final IconData icon;
   NavItem({required this.type, required this.icon, required this.onSelected});
 }
-
-// TODO: Create inline function for creating Row IconButton children with onSelected callback to run the item callback + set self as highlighted. Check figma design!
 
 class BottomNavBar extends StatefulWidget {
   final List<NavItem> navigationItems;

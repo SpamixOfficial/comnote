@@ -1,6 +1,7 @@
 import 'package:comnote/data.dart';
-import 'package:comnote/loginbrowser.dart';
+import 'package:comnote/models/generic.dart';
 import 'package:comnote/ui/components.dart';
+import 'package:comnote/ui/pages.dart';
 import 'package:comnote/ui/theme.dart';
 
 import 'package:flutter/material.dart';
@@ -25,7 +26,7 @@ final _router = GoRouter(
       builder: (context, state, child) {
         return Scaffold(
           backgroundColor: Theme.of(context).colorScheme.surfaceDim,
-          appBar: TopBar(entries: topBarEntries),
+          appBar: TopBar(entries: topBarEntries, homeBar: state.fullPath == "/home"),
           bottomNavigationBar: BottomNavBar(
             navigationItems: navBarEntries,
             initialItemIndex: 2,
@@ -74,18 +75,20 @@ class App extends StatelessWidget {
   }
 }
 
-List<TopBarEntry> topBarEntries = [
+void setTopList(TopBarEntry val, BuildContext context) {
+  Provider.of<AppHandler>(context, listen: false).state.currentTopList = val.value;
+}
+
+List<TopBarEntry<SearchRanking>> topBarEntries = [
   TopBarEntry(
     label: "Top 10 Airing",
-    onSelected: (TopBarEntry val) {
-      print(val);
-    },
+    onSelected: setTopList,
+    value: SearchRanking.top10Airing
   ),
   TopBarEntry(
     label: "Just Added",
-    onSelected: (TopBarEntry val) {
-      print(val);
-    },
+    onSelected: setTopList,
+    value: SearchRanking.justAdded
   ),
 ];
 
@@ -126,73 +129,3 @@ List<NavItem> navBarEntries = [
     icon: Icons.format_list_bulleted,
   ),
 ];
-
-class HomePage extends StatefulWidget {
-  const HomePage({super.key});
-
-  @override
-  State<HomePage> createState() => _HomePageState();
-}
-
-class _HomePageState extends State<HomePage> {
-  final Loginbrowser _loginbrowser = Loginbrowser();
-
-  @override
-  void initState() {
-    super.initState();
-    Provider.of<AppHandler>(context, listen: false).load_data();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[
-          Consumer<AppHandler>(
-            builder: (context, state, child) {
-              if (!state.state.login.loggedIn) {
-                return const Text("You're not logged in!");
-              }
-              return const Text("Woah you're actually logged in!?");
-            },
-          ),
-          ComButton(
-            onPressed: () async {
-              var resp = (await _loginbrowser.openLogin()).getOrThrow();
-              await Provider.of<AppHandler>(context, listen: false).login(resp);
-            },
-            content: "Pls click",
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class SettingsPage extends StatefulWidget {
-  const SettingsPage({super.key});
-
-  @override
-  State<SettingsPage> createState() => _SettingsPageState();
-}
-
-class _SettingsPageState extends State<SettingsPage> {
-  final Loginbrowser _loginbrowser = Loginbrowser();
-
-  @override
-  void initState() {
-    super.initState();
-    Provider.of<AppHandler>(context, listen: false).load_data();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[const Text("Rich bitch")],
-      ),
-    );
-  }
-}
