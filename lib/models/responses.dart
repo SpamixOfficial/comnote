@@ -35,8 +35,9 @@ class AnimeResponse {
 @JsonSerializable(fieldRename: FieldRename.snake)
 class AnimeSummaryWrapper {
   final AnimeSummary node;
+  final Ranking? ranking;
 
-  AnimeSummaryWrapper({required this.node});
+  AnimeSummaryWrapper({required this.node, this.ranking});
 
   factory AnimeSummaryWrapper.fromJson(Map<String, dynamic> json) =>
       _$AnimeSummaryWrapperFromJson(json);
@@ -53,6 +54,7 @@ class AnimeSummary {
   // TODO: get YYYY-[MM]-[DD] parsing working
   final String? endDate;
   final FavoriteInfo? favoritesInfo;
+  @JsonKey(defaultValue: [])
   final List<Genre> genres;
   final int id;
   final MainImageAsset mainPicture;
@@ -60,7 +62,9 @@ class AnimeSummary {
   final AnimeType mediaType;
   final int numEpisodes;
   final int numFavorites;
+  @JsonKey(name: "num_list_users")
   final int numInLists;
+  @JsonKey(name: "popularity")
   final int rankInLists;
   final int?
   rank; // never seen this but their Java models says it exists????? Putting option for now...

@@ -1,4 +1,5 @@
 import 'package:json_annotation/json_annotation.dart';
+import 'package:intl/intl.dart';
 part 'generic.g.dart';
 
 @JsonSerializable(fieldRename: FieldRename.snake)
@@ -42,6 +43,7 @@ class AlternativeTitles {
 @JsonSerializable(fieldRename: FieldRename.snake)
 class Broadcast {
   final WeekDay dayOfTheWeek;
+  @JsonKey(fromJson: _startTimeFromJson, toJson: _startTimeToJson)
   final DateTime startTime;
 
   Broadcast({required this.dayOfTheWeek, required this.startTime});
@@ -49,6 +51,10 @@ class Broadcast {
   factory Broadcast.fromJson(Map<String, dynamic> json) =>
       _$BroadcastFromJson(json);
   Map<String, dynamic> toJson() => _$BroadcastToJson(this);
+
+  static DateTime _startTimeFromJson(String startTime) =>
+      DateFormat.Hm().parse(startTime);
+  static String? _startTimeToJson(DateTime val) => DateFormat.Hm().format(val);
 }
 
 @JsonSerializable(fieldRename: FieldRename.snake)
@@ -120,13 +126,18 @@ enum AgeRating { pg13, rx, rPlus, pg, r, g }
 
 @JsonEnum(fieldRename: FieldRename.snake)
 enum SearchRanking {
-  justAdded,
-  mostPopular,
-  nowWatching,
-  top10Airing,
-  top10Upcoming,
-  topAnime,
-  trending,
+  justAdded('just_added'),
+  mostPopular('most_popular'), // not sure where we would get this from atm
+  nowWatching('now_watching'),
+  @JsonValue('airing')
+  top10Airing('airing'),
+  @JsonValue('upcoming')
+  top10Upcoming('upcoming'),
+  topAnime('top_anime'), // same here
+  trending;
+
+  final String? value;
+  const SearchRanking([this.value]);
 }
 
 @JsonSerializable(fieldRename: FieldRename.snake)
@@ -145,4 +156,4 @@ class Ranking {
 enum SearchSort { scoreVal, totalMembers, startDate, defaultSort }
 
 @JsonEnum(fieldRename: FieldRename.snake)
-enum WeekDay { monday, tuesday, wednsday, thursday, friday, saturday, sundayP }
+enum WeekDay { monday, tuesday, wednesday, thursday, friday, saturday, sunday, other }

@@ -1,7 +1,9 @@
 import 'dart:convert';
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:comnote/commands.dart';
+import 'package:comnote/models/generic.dart';
 import 'package:comnote/models/state.dart';
 
 import 'package:flutter/foundation.dart';
@@ -38,7 +40,7 @@ class AppHandler extends ChangeNotifier {
 
   Future<Result<()>> load_data() async {
     File sFile = (await get_statefile()).getOrThrow();
-    
+
     try {
       var contents = await sFile.readAsString();
 
@@ -95,5 +97,26 @@ class AppHandler extends ChangeNotifier {
     }
 
     return res;
+  }
+
+  Future<void> loadHomePageData({
+    required SearchRanking ranking,
+    bool dataRefresh = false,
+  }) async {
+    bool cacheInvalid =
+        (dataRefresh ||
+        (state.topLists[ranking] != null &&
+            DateTime.now().difference(state.topLists[ranking]!.fetchedAt).inSeconds >=
+                600));
+    if (cacheInvalid) {
+      return;
+    }
+
+    int nextPage = state.topLists[ranking]?.lastFetchedPage ?? 0;
+
+    nextPage = dataRefresh ? 0 : nextPage;
+
+    await commands.loadHomePageData(state, ranking, page: nextPage, dataRefresh: dataRefresh);
+    notifyListeners();
   }
 }

@@ -39,22 +39,23 @@ Map<String, dynamic> _$AlternativeTitlesToJson(AlternativeTitles instance) =>
 
 Broadcast _$BroadcastFromJson(Map<String, dynamic> json) => Broadcast(
   dayOfTheWeek: $enumDecode(_$WeekDayEnumMap, json['day_of_the_week']),
-  startTime: DateTime.parse(json['start_time'] as String),
+  startTime: Broadcast._startTimeFromJson(json['start_time'] as String),
 );
 
 Map<String, dynamic> _$BroadcastToJson(Broadcast instance) => <String, dynamic>{
   'day_of_the_week': _$WeekDayEnumMap[instance.dayOfTheWeek]!,
-  'start_time': instance.startTime.toIso8601String(),
+  'start_time': Broadcast._startTimeToJson(instance.startTime),
 };
 
 const _$WeekDayEnumMap = {
   WeekDay.monday: 'monday',
   WeekDay.tuesday: 'tuesday',
-  WeekDay.wednsday: 'wednsday',
+  WeekDay.wednesday: 'wednesday',
   WeekDay.thursday: 'thursday',
   WeekDay.friday: 'friday',
   WeekDay.saturday: 'saturday',
-  WeekDay.sundayP: 'sunday_p',
+  WeekDay.sunday: 'sunday',
+  WeekDay.other: 'other',
 };
 
 FavoriteInfo _$FavoriteInfoFromJson(Map<String, dynamic> json) =>

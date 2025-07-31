@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:comnote/data.dart';
 import 'package:comnote/models/generic.dart';
 import 'package:comnote/ui/components.dart';
@@ -76,7 +78,9 @@ class App extends StatelessWidget {
 }
 
 void setTopList(TopBarEntry val, BuildContext context) {
-  Provider.of<AppHandler>(context, listen: false).state.currentTopList = val.value;
+  var handler = Provider.of<AppHandler>(context, listen: false);
+  handler.state.currentTopList = val.value;
+  handler.loadHomePageData(ranking: val.value);
 }
 
 List<TopBarEntry<SearchRanking>> topBarEntries = [

@@ -5,18 +5,32 @@ part 'state.g.dart';
 
 
 @JsonSerializable()
+class TopList {
+
+  List<AnimeSummaryWrapper> list;
+  DateTime fetchedAt;
+  int lastFetchedPage;
+
+  TopList(this.list, this.fetchedAt, this.lastFetchedPage);
+
+  factory TopList.fromJson(Map<String, dynamic> json) =>
+      _$TopListFromJson(json);
+
+  Map<String, dynamic> toJson() => _$TopListToJson(this);
+}
+
+@JsonSerializable()
 class AppState {
   LoginState login;
 
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  Map<SearchRanking, List<AnimeSummaryWrapper>> topLists;
+  Map<SearchRanking, TopList> topLists;
 
   @JsonKey(defaultValue: SearchRanking.top10Airing)
   SearchRanking currentTopList;
 
-  AppState({LoginState? login, this.topLists = const {}, this.currentTopList = SearchRanking.top10Airing})
-    : login =
-          login ?? LoginState(false, DateTime.fromMillisecondsSinceEpoch(0));
+  AppState({LoginState? login, Map<SearchRanking, TopList>? topLists, this.currentTopList = SearchRanking.top10Airing})
+    : login = login ?? LoginState(false, DateTime.fromMillisecondsSinceEpoch(0)),
+    topLists = topLists ?? {};
 
   factory AppState.fromJson(Map<String, dynamic> json) =>
       _$AppStateFromJson(json);

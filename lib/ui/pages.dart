@@ -1,6 +1,6 @@
 import 'package:comnote/data.dart';
 import 'package:comnote/loginbrowser.dart';
-import 'package:comnote/ui/components.dart';
+import 'package:comnote/models/generic.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -17,7 +17,9 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
-    Provider.of<AppHandler>(context, listen: false).load_data();
+    var state = Provider.of<AppHandler>(context, listen: false);
+    state.load_data();
+    state.loadHomePageData(ranking: SearchRanking.top10Airing);
   }
 
   @override

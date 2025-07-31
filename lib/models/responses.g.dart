@@ -36,11 +36,14 @@ Map<String, dynamic> _$AnimeResponseToJson(AnimeResponse instance) =>
 AnimeSummaryWrapper _$AnimeSummaryWrapperFromJson(Map<String, dynamic> json) =>
     AnimeSummaryWrapper(
       node: AnimeSummary.fromJson(json['node'] as Map<String, dynamic>),
+      ranking: json['ranking'] == null
+          ? null
+          : Ranking.fromJson(json['ranking'] as Map<String, dynamic>),
     );
 
 Map<String, dynamic> _$AnimeSummaryWrapperToJson(
   AnimeSummaryWrapper instance,
-) => <String, dynamic>{'node': instance.node};
+) => <String, dynamic>{'node': instance.node, 'ranking': instance.ranking};
 
 AnimeSummary _$AnimeSummaryFromJson(Map<String, dynamic> json) => AnimeSummary(
   alternativeTitles: AlternativeTitles.fromJson(
@@ -56,9 +59,11 @@ AnimeSummary _$AnimeSummaryFromJson(Map<String, dynamic> json) => AnimeSummary(
   favoritesInfo: json['favorites_info'] == null
       ? null
       : FavoriteInfo.fromJson(json['favorites_info'] as Map<String, dynamic>),
-  genres: (json['genres'] as List<dynamic>)
-      .map((e) => Genre.fromJson(e as Map<String, dynamic>))
-      .toList(),
+  genres:
+      (json['genres'] as List<dynamic>?)
+          ?.map((e) => Genre.fromJson(e as Map<String, dynamic>))
+          .toList() ??
+      [],
   id: (json['id'] as num).toInt(),
   mainPicture: MainImageAsset.fromJson(
     json['main_picture'] as Map<String, dynamic>,
@@ -67,8 +72,8 @@ AnimeSummary _$AnimeSummaryFromJson(Map<String, dynamic> json) => AnimeSummary(
   mediaType: $enumDecode(_$AnimeTypeEnumMap, json['media_type']),
   numEpisodes: (json['num_episodes'] as num).toInt(),
   numFavorites: (json['num_favorites'] as num).toInt(),
-  numInLists: (json['num_in_lists'] as num).toInt(),
-  rankInLists: (json['rank_in_lists'] as num).toInt(),
+  numInLists: (json['num_list_users'] as num).toInt(),
+  rankInLists: (json['popularity'] as num).toInt(),
   rank: (json['rank'] as num?)?.toInt(),
   startDate: json['start_date'] as String?,
   startSeason: json['start_season'] == null
@@ -99,8 +104,8 @@ Map<String, dynamic> _$AnimeSummaryToJson(AnimeSummary instance) =>
       'media_type': _$AnimeTypeEnumMap[instance.mediaType]!,
       'num_episodes': instance.numEpisodes,
       'num_favorites': instance.numFavorites,
-      'num_in_lists': instance.numInLists,
-      'rank_in_lists': instance.rankInLists,
+      'num_list_users': instance.numInLists,
+      'popularity': instance.rankInLists,
       'rank': instance.rank,
       'start_date': instance.startDate,
       'start_season': instance.startSeason,
