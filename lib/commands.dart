@@ -38,7 +38,7 @@ class Commands {
     return true;
   }
 
-  Future<void> loadHomePageData(AppState state, SearchRanking ranking, {int page = 0, bool dataRefresh = false}) async {
+  Future<ResultDart<TopList, ApiError>> loadHomePageData(AppState state, SearchRanking ranking, {int page = 0, bool dataRefresh = false}) async {
     ResultDart<AnimeResponse, ApiError> resp;
     switch (ranking) {
       case SearchRanking.nowWatching:
@@ -56,14 +56,19 @@ class Commands {
     }
 
     if (resp.isError()) {
-      return;
+      return Failure(resp.exceptionOrNull()!);
     }
-    if (state.topLists[ranking] == null || dataRefresh) {
-      state.topLists[ranking] = TopList(resp.getOrThrow().data, DateTime.now(), page);
+
+    var obj = state.topLists[ranking];
+
+    if (obj == null || dataRefresh) {
+      obj = TopList(resp.getOrThrow().data, DateTime.now(), page);
     } else {
-      state.topLists[ranking]!.list += resp.getOrThrow().data;
-      state.topLists[ranking]!.fetchedAt = DateTime.now();
-      state.topLists[ranking]!.lastFetchedPage = page;
+      obj.list += resp.getOrThrow().data;
+      obj.fetchedAt = DateTime.now();
+      obj.lastFetchedPage = page;
     }
+
+    return Success(obj);
   }
 }

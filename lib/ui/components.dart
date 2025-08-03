@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:comnote/main.dart';
 import 'package:comnote/ui/theme.dart';
 import 'package:flutter/material.dart';
@@ -5,8 +6,9 @@ import 'package:go_router/go_router.dart';
 
 class RecommendationCard extends StatefulWidget {
   final String title, description;
-  final int rank, popularity;
-  final double rating;
+  final int? rank;
+  final int popularity;
+  final double? rating;
   final Uri poster;
   const RecommendationCard({
     super.key,
@@ -25,7 +27,71 @@ class RecommendationCard extends StatefulWidget {
 class _RecommendationCardState extends State<RecommendationCard> {
   @override
   Widget build(BuildContext context) {
-    return const Placeholder();
+    ThemeData theme = Theme.of(context);
+    ComThemeExtension ext = Theme.of(context).extension<ComThemeExtension>()!;
+
+    return Container(
+      height: 180,
+      padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 10),
+      decoration: ShapeDecoration(
+        color: theme.colorScheme.surface,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadiusGeometry.circular(20),
+        ),
+        shadows: [
+          BoxShadow(
+            color: Color(0x82000000),
+            blurRadius: 4,
+            offset: Offset(0, 4),
+          ),
+        ],
+      ),
+      child: Row(
+        spacing: 5,
+        mainAxisSize: MainAxisSize.max,
+        children: [
+          // Poster
+          Container(
+            alignment: Alignment.center,
+            padding: const EdgeInsets.all(2.0),
+            decoration: ShapeDecoration(
+              color: theme.colorScheme.surfaceBright,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadiusGeometry.circular(15.0),
+              ),
+            ),
+            child: CachedNetworkImage(
+              placeholder: (context, url) => CircularProgressIndicator(),
+              errorWidget: (context, url, error) => Icon(Icons.error),
+
+              imageUrl: widget.poster.toString(),
+              imageBuilder: (context, imageProvider) => Container(
+                width: 115,
+                decoration: ShapeDecoration(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadiusGeometry.circular(15.0),
+                  ),
+                  image: DecorationImage(
+                    image: imageProvider,
+                    fit: BoxFit.cover,
+                  ),
+                ),
+              ),
+            ),
+          ),
+
+          // Info panel
+          Container(
+            padding: const EdgeInsets.all(8.0),
+            decoration: ShapeDecoration(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadiusGeometry.circular(15.0),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }
 

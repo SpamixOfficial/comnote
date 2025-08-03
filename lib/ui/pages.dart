@@ -1,6 +1,10 @@
+import 'dart:developer';
+
 import 'package:comnote/data.dart';
 import 'package:comnote/loginbrowser.dart';
 import 'package:comnote/models/generic.dart';
+import 'package:comnote/models/state.dart';
+import 'package:comnote/ui/components.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -14,48 +18,105 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   final Loginbrowser _loginbrowser = Loginbrowser();
 
+  final GlobalKey<RefreshIndicatorState> _refreshIndicatorKey =
+      GlobalKey<RefreshIndicatorState>();
+
   @override
   void initState() {
     super.initState();
-    var state = Provider.of<AppHandler>(context, listen: false);
-    state.load_data();
-    state.loadHomePageData(ranking: SearchRanking.top10Airing);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _loadInitialData();
+    });
+  }
+
+  Future<void> _loadInitialData() async {
+    var handler = Provider.of<AppHandler>(context, listen: false);
+    var elementDraw = Provider.of<ElementsDraw>(context, listen: false);
+
+    elementDraw.refreshIndicatorKey = _refreshIndicatorKey;
+
+    handler.elementsState = elementDraw;
+
+    // Ensure app state is loaded
+    await handler.loadData();
+
+    // Trigger refresh indicator animation
+    _refreshIndicatorKey.currentState?.show();
+
+    // Fetch the initial homepage data
+    await handler.loadHomePageData(
+      ranking: SearchRanking.top10Airing,
+      updateChosenList: true,
+    );
   }
 
   @override
   Widget build(BuildContext context) {
-    /*return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[
+    return Center(
+      child: Stack(
+        children: [
+          // Cards display
           Consumer<AppHandler>(
-            builder: (context, state, child) {
-              if (!state.state.login.loggedIn) {
-                return const Text("You're not logged in!");
+            builder: (context, handler, child) {
+              final list = handler.state.topLists[handler.state.currentTopList];
+
+              if (list == null || handler.elementsState.showLoading) {
+                return const SizedBox.shrink();
               }
-              return const Text("Woah you're actually logged in!?");
+
+              final children = list.list
+                  .map<Widget>(
+                    (summary) => RecommendationCard(
+                      title: summary.node.title,
+                      description: summary.node.synopsis,
+                      popularity: summary.node.rankInLists,
+                      poster: summary.node.mainPicture.large,
+                      rank: summary.node.rank,
+                      rating: summary.node.rating,
+                    ),
+                  )
+                  .toList();
+
+              return RefreshIndicator(
+                key: _refreshIndicatorKey,
+                onRefresh: () async {
+                  await handler.loadHomePageData(
+                    ranking: handler.state.currentTopList,
+                    dataRefresh: true,
+                  );
+                },
+                child: ListView.separated(
+                  physics: const BouncingScrollPhysics(
+                    parent: AlwaysScrollableScrollPhysics(),
+                  ),
+                  padding: const EdgeInsets.all(10.0),
+                  itemCount: children.length,
+                  itemBuilder: (context, i) => children[i],
+                  separatorBuilder: (context, i) => const SizedBox(height: 10),
+                ),
+              );
             },
           ),
-          ComButton(
-            onPressed: () async {
-              var resp = (await _loginbrowser.openLogin()).getOrThrow();
-              await Provider.of<AppHandler>(context, listen: false).login(resp);
+          // Full-screen circular loader with background (to give the illusion of navigating to a new page and the loader appearing!)
+          Consumer<ElementsDraw>(
+            builder: (context, draw, child) {
+              if (draw.showLoading) {
+                return Container(
+                  width: double.maxFinite,
+                  height: double.maxFinite,
+                  alignment: Alignment.center,
+                  color: Theme.of(context).colorScheme.surfaceDim,
+                  child: const Padding(
+                    padding: EdgeInsets.all(20),
+                    child: CircularProgressIndicator(),
+                  ),
+                );
+              }
+
+              return const SizedBox.shrink();
             },
-            content: "Pls click",
           ),
         ],
-      ),
-    );*/
-
-    return Center(
-      child: Consumer<AppHandler>(
-        builder: (context, value, child) => ListView(
-          itemExtent: 20.0,
-          physics: const BouncingScrollPhysics(
-            parent: AlwaysScrollableScrollPhysics(),
-          ),
-          children: [],
-        ),
       ),
     );
   }
@@ -74,7 +135,7 @@ class _SettingsPageState extends State<SettingsPage> {
   @override
   void initState() {
     super.initState();
-    Provider.of<AppHandler>(context, listen: false).load_data();
+    Provider.of<AppHandler>(context, listen: false).loadData();
   }
 
   @override

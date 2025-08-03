@@ -1,20 +1,22 @@
 import 'dart:convert';
-import 'dart:developer';
 import 'dart:io';
 
 import 'package:comnote/commands.dart';
 import 'package:comnote/models/generic.dart';
 import 'package:comnote/models/state.dart';
 
-import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 import 'package:result_dart/result_dart.dart';
 import 'package:path_provider/path_provider.dart';
 
+import 'dart:developer' as developer;
+
 class AppHandler extends ChangeNotifier {
   AppState state = AppState();
   Commands commands = Commands();
+  ElementsDraw elementsState = ElementsDraw();
   File? stateFile;
   FlutterSecureStorage? storage;
 
@@ -22,7 +24,7 @@ class AppHandler extends ChangeNotifier {
 
   /* ---------- Statefile function ---------- */
 
-  Future<Result<File>> get_statefile() async {
+  Future<Result<File>> getStateFile() async {
     if (stateFile == null) {
       var docPath = (await getApplicationDocumentsDirectory()).path;
       File f = File("$docPath/state.json");
@@ -32,14 +34,14 @@ class AppHandler extends ChangeNotifier {
     return Success(stateFile!); // should be safe
   }
 
-  Result<FlutterSecureStorage> get_storage() {
+  Result<FlutterSecureStorage> getStorage() {
     storage ??= FlutterSecureStorage();
 
     return Success(storage!);
   }
 
-  Future<Result<()>> load_data() async {
-    File sFile = (await get_statefile()).getOrThrow();
+  Future<Result<()>> loadData() async {
+    File sFile = (await getStateFile()).getOrThrow();
 
     try {
       var contents = await sFile.readAsString();
@@ -49,7 +51,7 @@ class AppHandler extends ChangeNotifier {
         state = AppState.fromJson(jsonContents);
 
         if (state.login.loggedIn) {
-          Map<String, String> storageVals = await (get_storage().getOrThrow())
+          Map<String, String> storageVals = await (getStorage().getOrThrow())
               .readAll();
           state.login.token = storageVals["token"];
           state.login.refreshToken = storageVals["refreshToken"];
@@ -66,12 +68,12 @@ class AppHandler extends ChangeNotifier {
     return Success(());
   }
 
-  Future<Result<()>> save_data() async {
-    File sFile = (await get_statefile()).getOrThrow();
+  Future<Result<()>> saveData() async {
+    File sFile = (await getStateFile()).getOrThrow();
 
     try {
       var contents = state.toJson();
-      var st = get_storage().getOrThrow();
+      var st = getStorage().getOrThrow();
 
       stateFile = await sFile.writeAsString(jsonEncode(contents));
       if (state.login.loggedIn) {
@@ -91,7 +93,7 @@ class AppHandler extends ChangeNotifier {
     var res = await commands.login(state, loginBrowserResponse);
 
     if (res) {
-      (await save_data()).getOrThrow();
+      (await saveData()).getOrThrow();
 
       notifyListeners();
     }
@@ -102,21 +104,58 @@ class AppHandler extends ChangeNotifier {
   Future<void> loadHomePageData({
     required SearchRanking ranking,
     bool dataRefresh = false,
+    bool updateChosenList = false,
   }) async {
-    bool cacheInvalid =
-        (dataRefresh ||
-        (state.topLists[ranking] != null &&
-            DateTime.now().difference(state.topLists[ranking]!.fetchedAt).inSeconds >=
-                600));
-    if (cacheInvalid) {
-      return;
+    if (!(state.topLists[ranking] != null &&
+        DateTime.now()
+                .difference(state.topLists[ranking]!.fetchedAt)
+                .inSeconds <=
+            600 &&
+        !dataRefresh)) {
+      int nextPage = state.topLists[ranking]?.lastFetchedPage ?? 0;
+
+      nextPage = dataRefresh ? 0 : nextPage;
+
+      elementsState.toggleLoading();
+
+      var resp = await commands.loadHomePageData(
+        state,
+        ranking,
+        page: nextPage,
+        dataRefresh: dataRefresh,
+      );
+
+      if (resp.isError()) {
+        developer.log(
+          "An error was encountered while updating home data",
+          level: 1000,
+          error: resp.exceptionOrNull()!,
+        );
+        return;
+      }
+
+      state.topLists[ranking] = resp.getOrThrow();
+      elementsState.toggleLoading();
+
+      (await saveData()).getOrThrow();
     }
 
-    int nextPage = state.topLists[ranking]?.lastFetchedPage ?? 0;
+    if (updateChosenList) {
+      state.currentTopList = ranking;
+    }
 
-    nextPage = dataRefresh ? 0 : nextPage;
+    notifyListeners();
+  }
+}
 
-    await commands.loadHomePageData(state, ranking, page: nextPage, dataRefresh: dataRefresh);
+class ElementsDraw extends ChangeNotifier {
+  GlobalKey<RefreshIndicatorState> refreshIndicatorKey =
+      GlobalKey<RefreshIndicatorState>();
+  bool showLoading = false;
+
+  void toggleLoading() {
+    developer.log("toggle!!");
+    showLoading = !showLoading;
     notifyListeners();
   }
 }

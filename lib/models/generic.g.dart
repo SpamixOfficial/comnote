@@ -39,7 +39,7 @@ Map<String, dynamic> _$AlternativeTitlesToJson(AlternativeTitles instance) =>
 
 Broadcast _$BroadcastFromJson(Map<String, dynamic> json) => Broadcast(
   dayOfTheWeek: $enumDecode(_$WeekDayEnumMap, json['day_of_the_week']),
-  startTime: Broadcast._startTimeFromJson(json['start_time'] as String),
+  startTime: Broadcast._startTimeFromJson(json['start_time'] as String?),
 );
 
 Map<String, dynamic> _$BroadcastToJson(Broadcast instance) => <String, dynamic>{

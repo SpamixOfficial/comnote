@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:comnote/data.dart';
 import 'package:comnote/models/generic.dart';
 import 'package:comnote/ui/components.dart';
@@ -13,9 +11,12 @@ import 'package:go_router/go_router.dart';
 
 void main() {
   runApp(
-    ChangeNotifierProvider(
-      create: (context) => AppHandler(),
-      child: const App(),
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider<AppHandler>(create: (_) => AppHandler()),
+        ChangeNotifierProvider<ElementsDraw>(create: (_) => ElementsDraw())
+      ],
+      child: App(),
     ),
   );
 }
@@ -28,7 +29,10 @@ final _router = GoRouter(
       builder: (context, state, child) {
         return Scaffold(
           backgroundColor: Theme.of(context).colorScheme.surfaceDim,
-          appBar: TopBar(entries: topBarEntries, homeBar: state.fullPath == "/home"),
+          appBar: TopBar(
+            entries: topBarEntries,
+            homeBar: state.fullPath == "/home",
+          ),
           bottomNavigationBar: BottomNavBar(
             navigationItems: navBarEntries,
             initialItemIndex: 2,
@@ -78,21 +82,22 @@ class App extends StatelessWidget {
 }
 
 void setTopList(TopBarEntry val, BuildContext context) {
-  var handler = Provider.of<AppHandler>(context, listen: false);
-  handler.state.currentTopList = val.value;
-  handler.loadHomePageData(ranking: val.value);
+  Provider.of<AppHandler>(
+    context,
+    listen: false,
+  ).loadHomePageData(ranking: val.value, updateChosenList: true);
 }
 
 List<TopBarEntry<SearchRanking>> topBarEntries = [
   TopBarEntry(
     label: "Top 10 Airing",
     onSelected: setTopList,
-    value: SearchRanking.top10Airing
+    value: SearchRanking.top10Airing,
   ),
   TopBarEntry(
     label: "Just Added",
     onSelected: setTopList,
-    value: SearchRanking.justAdded
+    value: SearchRanking.justAdded,
   ),
 ];
 

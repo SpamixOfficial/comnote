@@ -44,7 +44,7 @@ class AlternativeTitles {
 class Broadcast {
   final WeekDay dayOfTheWeek;
   @JsonKey(fromJson: _startTimeFromJson, toJson: _startTimeToJson)
-  final DateTime startTime;
+  final DateTime? startTime;
 
   Broadcast({required this.dayOfTheWeek, required this.startTime});
 
@@ -52,9 +52,9 @@ class Broadcast {
       _$BroadcastFromJson(json);
   Map<String, dynamic> toJson() => _$BroadcastToJson(this);
 
-  static DateTime _startTimeFromJson(String startTime) =>
-      DateFormat.Hm().parse(startTime);
-  static String? _startTimeToJson(DateTime val) => DateFormat.Hm().format(val);
+  static DateTime? _startTimeFromJson(String? startTime) =>
+      startTime != null ? DateFormat.Hm().parse(startTime) : null;
+  static String? _startTimeToJson(DateTime? val) => val != null ? DateFormat.Hm().format(val) : null;
 }
 
 @JsonSerializable(fieldRename: FieldRename.snake)

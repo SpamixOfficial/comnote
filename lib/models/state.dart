@@ -28,6 +28,7 @@ class AppState {
   @JsonKey(defaultValue: SearchRanking.top10Airing)
   SearchRanking currentTopList;
 
+
   AppState({LoginState? login, Map<SearchRanking, TopList>? topLists, this.currentTopList = SearchRanking.top10Airing})
     : login = login ?? LoginState(false, DateTime.fromMillisecondsSinceEpoch(0)),
     topLists = topLists ?? {};
