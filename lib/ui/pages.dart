@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:comnote/data.dart';
 import 'package:comnote/loginbrowser.dart';
 import 'package:comnote/models/generic.dart';
@@ -38,7 +40,6 @@ class _HomePageState extends State<HomePage> {
       // Trigger refresh indicator animation
       _refreshIndicatorKey.currentState?.show();
 
-
       // Fetch the initial homepage data
       await handler.loadHomePageData(
         ranking: SearchRanking.top10Airing,
@@ -71,9 +72,39 @@ class _HomePageState extends State<HomePage> {
                       poster: summary.node.mainPicture.large,
                       rank: summary.node.rank,
                       rating: summary.node.rating,
+                      id: summary.node.id,
                     ),
                   )
                   .toList();
+
+              var cardList = ListView.separated(
+                controller: handler.elementsState.recommendationsScrollControl,
+                physics: const BouncingScrollPhysics(
+                  parent: AlwaysScrollableScrollPhysics(),
+                ),
+                padding: const EdgeInsets.all(10.0),
+                itemCount: children.length,
+                itemBuilder: (context, i) => children[i],
+                separatorBuilder: (context, i) => const SizedBox(height: 10),
+              );
+
+              if (handler
+                  .elementsState
+                  .recommendationsScrollControl
+                  .positions
+                  .isNotEmpty) {
+                // jump to saved position, or if not saved jump to start!
+                handler.elementsState.recommendationsScrollControl.jumpTo(
+                  handler.elementsState.savedScrollPositions[handler
+                          .state
+                          .currentTopList] ??
+                      handler
+                          .elementsState
+                          .recommendationsScrollControl
+                          .position
+                          .minScrollExtent,
+                );
+              }
 
               return RefreshIndicator(
                 key: _refreshIndicatorKey,
@@ -83,15 +114,7 @@ class _HomePageState extends State<HomePage> {
                     dataRefresh: true,
                   );
                 },
-                child: ListView.separated(
-                  physics: const BouncingScrollPhysics(
-                    parent: AlwaysScrollableScrollPhysics(),
-                  ),
-                  padding: const EdgeInsets.all(10.0),
-                  itemCount: children.length,
-                  itemBuilder: (context, i) => children[i],
-                  separatorBuilder: (context, i) => const SizedBox(height: 10),
-                ),
+                child: cardList,
               );
             },
           ),

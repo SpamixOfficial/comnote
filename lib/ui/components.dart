@@ -7,7 +7,7 @@ import 'package:go_router/go_router.dart';
 class RecommendationCard extends StatefulWidget {
   final String title, description;
   final int? rank;
-  final int popularity;
+  final int popularity, id;
   final double? rating;
   final Uri poster;
   const RecommendationCard({
@@ -18,6 +18,7 @@ class RecommendationCard extends StatefulWidget {
     required this.poster,
     required this.rank,
     required this.rating,
+    required this.id,
   });
 
   @override
@@ -27,7 +28,12 @@ class RecommendationCard extends StatefulWidget {
 class _RecommendationCardState extends State<RecommendationCard> {
   @override
   Widget build(BuildContext context) {
-    var parsedTitle = widget.title.length > 26 ? "${widget.title.substring(0,26)}..." : widget.title;
+    var truncatedTitle = widget.title.length > 26
+        ? "${widget.title.substring(0, 26)}..."
+        : widget.title;
+    var truncatedDescription = widget.description.length > 140
+        ? "${widget.description.substring(0, 140)}..."
+        : widget.description;
 
     ThemeData theme = Theme.of(context);
     ComThemeExtension ext = Theme.of(context).extension<ComThemeExtension>()!;
@@ -104,12 +110,12 @@ class _RecommendationCardState extends State<RecommendationCard> {
                           borderRadius: BorderRadiusGeometry.circular(10.0),
                         ),
                       ),
-                      padding: const EdgeInsets.all(2.0),
+                      padding: const EdgeInsets.all(4.0),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            parsedTitle,
+                            truncatedTitle,
                             style: TextStyle(
                               fontSize: 15,
                               fontFamily: 'Helvetica',
@@ -118,9 +124,19 @@ class _RecommendationCardState extends State<RecommendationCard> {
                             maxLines: 1,
                           ),
                           Divider(
+                            height: 6.0, // spacing fix
                             radius: BorderRadiusGeometry.circular(30.0),
                             color: theme.colorScheme.surfaceBright,
                             thickness: 4.0,
+                          ),
+                          Text(
+                            truncatedDescription,
+                            style: TextStyle(
+                              fontSize: 13,
+                              fontFamily: 'Helvetica',
+                              fontWeight: FontWeight.w300,
+                            ),
+                            maxLines: 4,
                           ),
                         ],
                       ),

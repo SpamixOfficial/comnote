@@ -85,10 +85,11 @@ class App extends StatelessWidget {
 }
 
 void setTopList(TopBarEntry val, BuildContext context) {
-  Provider.of<AppHandler>(
+  var handler = Provider.of<AppHandler>(
     context,
     listen: false,
-  ).loadHomePageData(ranking: val.value, updateChosenList: true);
+  );
+  handler.loadHomePageData(ranking: val.value, updateChosenList: true);
 }
 
 List<TopBarEntry<SearchRanking>> topBarEntries = [

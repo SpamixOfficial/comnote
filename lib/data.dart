@@ -142,6 +142,10 @@ class AppHandler extends ChangeNotifier {
     }
 
     if (updateChosenList) {
+      if (elementsState.recommendationsScrollControl.positions.isNotEmpty) {
+        elementsState.savedScrollPositions[state.currentTopList] =
+            elementsState.recommendationsScrollControl.offset;
+      }
       state.currentTopList = ranking;
     }
 
@@ -150,12 +154,15 @@ class AppHandler extends ChangeNotifier {
 }
 
 class ElementsDraw extends ChangeNotifier {
+  // Home Page
   GlobalKey<RefreshIndicatorState> refreshIndicatorKey =
       GlobalKey<RefreshIndicatorState>();
+
   bool showLoading = false;
+  Map<SearchRanking, double> savedScrollPositions = {};
+  ScrollController recommendationsScrollControl = ScrollController();
 
   void toggleLoading() {
-    developer.log("toggle!!");
     showLoading = !showLoading;
     notifyListeners();
   }
