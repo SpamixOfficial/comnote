@@ -47,7 +47,10 @@ class AnimeSummaryWrapper {
 @JsonSerializable(fieldRename: FieldRename.snake)
 class AnimeSummary {
   final AlternativeTitles alternativeTitles;
-  final int averageEpisodeDuration;
+
+  @JsonKey(fromJson: _averageDurationFromJson, toJson: _averageDurationToJson)
+  final Duration averageEpisodeDuration;
+
   final String? background;
   final Broadcast? broadcast;
   final DateTime createdAt;
@@ -58,14 +61,19 @@ class AnimeSummary {
   final List<Genre> genres;
   final int id;
   final MainImageAsset mainPicture;
+
+  @JsonKey(name: "mean")
   final double? rating;
+
   final AnimeType mediaType;
   final int numEpisodes;
   final int numFavorites;
+
   @JsonKey(name: "num_list_users")
   final int numInLists;
   @JsonKey(name: "popularity")
   final int rankInLists;
+
   final int?
   rank; // never seen this but their Java models says it exists????? Putting option for now...
   final String? startDate; // TODO: get YYYY-[MM]-[DD] parsing working
@@ -109,4 +117,9 @@ class AnimeSummary {
   factory AnimeSummary.fromJson(Map<String, dynamic> json) =>
       _$AnimeSummaryFromJson(json);
   Map<String, dynamic> toJson() => _$AnimeSummaryToJson(this);
+
+  // Custom to/from json impls
+  static Duration _averageDurationFromJson(int seconds) =>
+      Duration(seconds: seconds);
+  static int _averageDurationToJson(Duration val) => val.inSeconds;
 }

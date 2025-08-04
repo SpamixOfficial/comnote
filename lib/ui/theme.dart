@@ -12,6 +12,14 @@ class ComThemeExtension extends ThemeExtension<ComThemeExtension> {
   final List<Color>? navBarGradientColors;
   final Color? navBarBorderColor;
 
+  final Color? cardBackground;
+  final Color? onCardBackground;
+  final Color? cardDivider;
+
+  final Color? badRating;
+  final Color? midRating;
+  final Color? goodRating;
+
   const ComThemeExtension({
     required this.textShadowColor,
     required this.topBarGradientColors,
@@ -19,6 +27,12 @@ class ComThemeExtension extends ThemeExtension<ComThemeExtension> {
     required this.homeBarGradientColors,
     required this.navBarGradientColors,
     required this.navBarBorderColor,
+    required this.cardBackground,
+    required this.onCardBackground,
+    required this.cardDivider,
+    required this.badRating,
+    required this.goodRating,
+    required this.midRating,
   });
 
   @override
@@ -28,6 +42,12 @@ class ComThemeExtension extends ThemeExtension<ComThemeExtension> {
     Color? topBarBorderColor,
     List<Color>? navBarGradientColors,
     Color? navBarBorderColor,
+    Color? cardBackground,
+    Color? onCardBackground,
+    Color? cardDivider,
+    Color? badRating,
+    Color? midRating,
+    Color? goodRating,
   }) {
     return ComThemeExtension(
       textShadowColor: textShadowColor,
@@ -36,6 +56,12 @@ class ComThemeExtension extends ThemeExtension<ComThemeExtension> {
       homeBarGradientColors: homeBarGradientColors,
       navBarBorderColor: navBarBorderColor,
       navBarGradientColors: navBarGradientColors,
+      onCardBackground: onCardBackground,
+      cardBackground: cardBackground,
+      cardDivider: cardDivider,
+      badRating: badRating,
+      midRating: midRating,
+      goodRating: goodRating,
     );
   }
 
@@ -64,6 +90,14 @@ class ComThemeExtension extends ThemeExtension<ComThemeExtension> {
         other.navBarBorderColor,
         t,
       ),
+
+      cardBackground: Color.lerp(cardBackground, other.cardBackground, t),
+      onCardBackground: Color.lerp(onCardBackground, other.onCardBackground, t),
+      cardDivider: Color.lerp(cardDivider, other.cardDivider, t),
+
+      badRating: Color.lerp(badRating, other.badRating, t),
+      midRating: Color.lerp(midRating, other.midRating, t),
+      goodRating: Color.lerp(goodRating, other.goodRating, t),
     );
   }
 }
@@ -91,6 +125,12 @@ final comLight = ThemeData(
       homeBarGradientColors: [Color(0xe818181b), Color(0x00f8f8f8)],
       navBarGradientColors: [Color(0xffF8F8F8), Color(0xff18181B)],
       navBarBorderColor: Color(0x00F8F8F8),
+      cardBackground: Color(0xff262629),
+      onCardBackground: Color(0xfff8f8f8),
+      cardDivider: Color(0xffe4e4e7),
+      badRating: Color(0xffEA003E),
+      midRating: Color(0xffDF6F00),
+      goodRating: Color(0xff009689)
     ),
   ],
 );
@@ -155,6 +195,12 @@ final comDark = ThemeData(
       homeBarGradientColors: [Color(0xff001878), Color(0xff010515)],
       navBarGradientColors: [Color(0xff010529), Color(0xff001878)],
       navBarBorderColor: Color(0xff1a273a),
+      cardBackground: Color(0xff010515),
+      onCardBackground: Color(0xfff7f9fa),
+      cardDivider: Color(0xff1a2739),
+      badRating: Color(0xffFE1C55),
+      midRating: Color(0xffEEAF00),
+      goodRating: Color(0xff00C850),
     ),
   ],
 );

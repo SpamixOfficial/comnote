@@ -49,7 +49,9 @@ AnimeSummary _$AnimeSummaryFromJson(Map<String, dynamic> json) => AnimeSummary(
   alternativeTitles: AlternativeTitles.fromJson(
     json['alternative_titles'] as Map<String, dynamic>,
   ),
-  averageEpisodeDuration: (json['average_episode_duration'] as num).toInt(),
+  averageEpisodeDuration: AnimeSummary._averageDurationFromJson(
+    (json['average_episode_duration'] as num).toInt(),
+  ),
   background: json['background'] as String?,
   broadcast: json['broadcast'] == null
       ? null
@@ -68,7 +70,7 @@ AnimeSummary _$AnimeSummaryFromJson(Map<String, dynamic> json) => AnimeSummary(
   mainPicture: MainImageAsset.fromJson(
     json['main_picture'] as Map<String, dynamic>,
   ),
-  rating: (json['rating'] as num?)?.toDouble(),
+  rating: (json['mean'] as num?)?.toDouble(),
   mediaType: $enumDecode(_$AnimeTypeEnumMap, json['media_type']),
   numEpisodes: (json['num_episodes'] as num).toInt(),
   numFavorites: (json['num_favorites'] as num).toInt(),
@@ -91,7 +93,9 @@ AnimeSummary _$AnimeSummaryFromJson(Map<String, dynamic> json) => AnimeSummary(
 Map<String, dynamic> _$AnimeSummaryToJson(AnimeSummary instance) =>
     <String, dynamic>{
       'alternative_titles': instance.alternativeTitles,
-      'average_episode_duration': instance.averageEpisodeDuration,
+      'average_episode_duration': AnimeSummary._averageDurationToJson(
+        instance.averageEpisodeDuration,
+      ),
       'background': instance.background,
       'broadcast': instance.broadcast,
       'created_at': instance.createdAt.toIso8601String(),
@@ -100,7 +104,7 @@ Map<String, dynamic> _$AnimeSummaryToJson(AnimeSummary instance) =>
       'genres': instance.genres,
       'id': instance.id,
       'main_picture': instance.mainPicture,
-      'rating': instance.rating,
+      'mean': instance.rating,
       'media_type': _$AnimeTypeEnumMap[instance.mediaType]!,
       'num_episodes': instance.numEpisodes,
       'num_favorites': instance.numFavorites,

@@ -45,6 +45,19 @@ class _HomePageState extends State<HomePage> {
         ranking: SearchRanking.top10Airing,
         updateChosenList: true,
       );
+
+      elementDraw.recommendationsScrollControl.addListener(() async {
+        if (elementDraw.recommendationsScrollControl.position.atEdge &&
+            elementDraw.recommendationsScrollControl.position.pixels != 0) {
+          await handler.loadHomePageData(
+            ranking: handler.state.currentTopList,
+            scrollPixel:
+                elementDraw.recommendationsScrollControl.position.pixels + 30,
+            loadNextPage: true
+          );
+        }
+        //await handler.loadHomePageData(ranking: handler.state.currentTopList);
+      });
     }
     handler.homePageInitialized = true;
   }
@@ -63,7 +76,7 @@ class _HomePageState extends State<HomePage> {
                 return const SizedBox.shrink();
               }
 
-              final children = list.list
+              var children = list.list
                   .map<Widget>(
                     (summary) => RecommendationCard(
                       title: summary.node.title,

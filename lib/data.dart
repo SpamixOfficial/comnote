@@ -105,17 +105,20 @@ class AppHandler extends ChangeNotifier {
   Future<void> loadHomePageData({
     required SearchRanking ranking,
     bool dataRefresh = false,
+    bool loadNextPage = false,
     bool updateChosenList = false,
+    double? scrollPixel,
   }) async {
-    if (!(state.topLists[ranking] != null &&
-        DateTime.now()
-                .difference(state.topLists[ranking]!.fetchedAt)
-                .inSeconds <=
-            600 &&
-        !dataRefresh)) {
+    if (loadNextPage ||
+        !(state.topLists[ranking] != null &&
+            DateTime.now()
+                    .difference(state.topLists[ranking]!.fetchedAt)
+                    .inSeconds <=
+                600 &&
+            !dataRefresh)) {
       int nextPage = state.topLists[ranking]?.lastFetchedPage ?? 0;
 
-      nextPage = dataRefresh ? 0 : nextPage;
+      nextPage = dataRefresh ? 0 : nextPage + 1;
 
       elementsState.toggleLoading();
 
@@ -141,8 +144,13 @@ class AppHandler extends ChangeNotifier {
       (await saveData()).getOrThrow();
     }
 
+    if (scrollPixel != null) {
+      elementsState.savedScrollPositions[state.currentTopList] = scrollPixel;
+    }
+
     if (updateChosenList) {
-      if (elementsState.recommendationsScrollControl.positions.isNotEmpty) {
+      if (elementsState.recommendationsScrollControl.positions.isNotEmpty &&
+          scrollPixel == null) {
         elementsState.savedScrollPositions[state.currentTopList] =
             elementsState.recommendationsScrollControl.offset;
       }

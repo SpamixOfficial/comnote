@@ -37,6 +37,23 @@ class _RecommendationCardState extends State<RecommendationCard> {
 
     ThemeData theme = Theme.of(context);
     ComThemeExtension ext = Theme.of(context).extension<ComThemeExtension>()!;
+    Color ratingColor;
+    if (widget.rating != null) {
+      double tmpRatingDouble = widget.rating!;
+
+      ratingColor =
+          (switch (tmpRatingDouble) {
+            < 3.5 => ext.badRating,
+            > 3.5 && < 7.49 => ext.midRating,
+            _ => ext.goodRating,
+          }) ??
+          theme.colorScheme.onSurface;
+    } else {
+      ratingColor = theme.colorScheme.onSurface;
+    }
+
+    Shadow ratingTextShadow = Shadow(color: ratingColor, blurRadius: 4.0);
+    Shadow ratingShadow = Shadow(color: ratingColor, blurRadius: 9.0);
 
     return Container(
       height: 180,
@@ -105,12 +122,17 @@ class _RecommendationCardState extends State<RecommendationCard> {
                   Expanded(
                     child: Container(
                       decoration: ShapeDecoration(
-                        color: theme.colorScheme.surfaceDim,
+                        color:
+                            ext.cardBackground ?? theme.colorScheme.surfaceDim,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadiusGeometry.circular(10.0),
                         ),
                       ),
-                      padding: const EdgeInsets.all(4.0),
+                      padding: const EdgeInsets.only(
+                        top: 4.0,
+                        left: 4.0,
+                        right: 4.0,
+                      ),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -120,14 +142,19 @@ class _RecommendationCardState extends State<RecommendationCard> {
                               fontSize: 15,
                               fontFamily: 'Helvetica',
                               fontWeight: FontWeight.w700,
+                              color:
+                                  ext.onCardBackground ??
+                                  theme.colorScheme.onSurface,
                             ),
                             maxLines: 1,
                           ),
                           Divider(
                             height: 6.0, // spacing fix
                             radius: BorderRadiusGeometry.circular(30.0),
-                            color: theme.colorScheme.surfaceBright,
-                            thickness: 4.0,
+                            color:
+                                ext.cardDivider ??
+                                theme.colorScheme.surfaceBright,
+                            thickness: 2.0,
                           ),
                           Text(
                             truncatedDescription,
@@ -135,6 +162,9 @@ class _RecommendationCardState extends State<RecommendationCard> {
                               fontSize: 13,
                               fontFamily: 'Helvetica',
                               fontWeight: FontWeight.w300,
+                              color:
+                                  ext.onCardBackground ??
+                                  theme.colorScheme.onSurface,
                             ),
                             maxLines: 4,
                           ),
@@ -143,21 +173,68 @@ class _RecommendationCardState extends State<RecommendationCard> {
                     ),
                   ),
                   // Ratings and button
-                  Row(
-                    children: [
-                      Column(children: [Container(), Container()]),
-                      Container(),
-                      ComButton(
-                        onPressed: () {},
-                        content: "Open",
-                        width: 100,
-                        icon: Icon(Icons.arrow_right_alt, size: 25),
-                        textStyle: TextStyle(
-                          fontSize: 20.0,
-                          fontWeight: FontWeight.bold,
+                  IntrinsicHeight(
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      spacing: 5.0,
+                      children: [
+                        // Ranks
+                        Column(children: [Container(), Container()]),
+                        // Rating
+                        Container(
+                          width: 60,
+                          decoration: ShapeDecoration(
+                            color:
+                                ext.cardBackground ?? theme.colorScheme.surface,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadiusGeometry.circular(5.0),
+                              side: BorderSide(color: ratingColor, width: 2),
+                            ),
+                          ),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.max,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            spacing: 5.0,
+                            children: [
+                              Icon(
+                                Icons.star,
+                                size: 16.0,
+                                color: ratingColor,
+                                shadows: [ratingTextShadow],
+                              ),
+                              Text(
+                                widget.rating?.toString() ?? "?.??",
+                                style: TextStyle(
+                                  height: 1.0, // compress so it is centered :D
+                                  fontSize: 14,
+                                  fontFamily: 'Helvetica',
+                                  fontWeight: FontWeight.bold,
+                                  color: ratingColor,
+                                  shadows: [ratingTextShadow],
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
-                      ),
-                    ],
+
+                        // Open
+                        Expanded(
+                          child: ComButton(
+                            onPressed: () {},
+                            content: "Open",
+                            width: 100,
+                            icon: Icon(Icons.arrow_right_alt, size: 25),
+                            textStyle: TextStyle(
+                              fontSize: 20.0,
+                              fontWeight: FontWeight.bold,
+                            ),
+                            cornerRadius: 5.0,
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ],
               ),
@@ -174,6 +251,7 @@ class ComButton extends StatelessWidget {
   final String content;
   final Icon? icon;
   final double? width, height;
+  final double cornerRadius;
   final TextStyle? textStyle;
 
   const ComButton({
@@ -184,6 +262,7 @@ class ComButton extends StatelessWidget {
     this.width,
     this.height,
     this.textStyle,
+    this.cornerRadius = 10.0,
   });
 
   @override
@@ -224,7 +303,7 @@ class ComButton extends StatelessWidget {
         decoration: ShapeDecoration(
           color: Theme.of(context).colorScheme.primary,
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(10),
+            borderRadius: BorderRadius.circular(cornerRadius),
           ),
           shadows: [
             BoxShadow(
