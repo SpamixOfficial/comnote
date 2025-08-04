@@ -1,9 +1,6 @@
-import 'dart:developer';
-
 import 'package:comnote/data.dart';
 import 'package:comnote/loginbrowser.dart';
 import 'package:comnote/models/generic.dart';
-import 'package:comnote/models/state.dart';
 import 'package:comnote/ui/components.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -31,23 +28,24 @@ class _HomePageState extends State<HomePage> {
 
   Future<void> _loadInitialData() async {
     var handler = Provider.of<AppHandler>(context, listen: false);
-    var elementDraw = Provider.of<ElementsDraw>(context, listen: false);
+    if (!handler.homePageInitialized) {
+      var elementDraw = Provider.of<ElementsDraw>(context, listen: false);
+      elementDraw.refreshIndicatorKey = _refreshIndicatorKey;
 
-    elementDraw.refreshIndicatorKey = _refreshIndicatorKey;
+      // Ensure app state is loaded
+      await handler.loadData();
 
-    handler.elementsState = elementDraw;
+      // Trigger refresh indicator animation
+      _refreshIndicatorKey.currentState?.show();
 
-    // Ensure app state is loaded
-    await handler.loadData();
 
-    // Trigger refresh indicator animation
-    _refreshIndicatorKey.currentState?.show();
-
-    // Fetch the initial homepage data
-    await handler.loadHomePageData(
-      ranking: SearchRanking.top10Airing,
-      updateChosenList: true,
-    );
+      // Fetch the initial homepage data
+      await handler.loadHomePageData(
+        ranking: SearchRanking.top10Airing,
+        updateChosenList: true,
+      );
+    }
+    handler.homePageInitialized = true;
   }
 
   @override
@@ -135,7 +133,6 @@ class _SettingsPageState extends State<SettingsPage> {
   @override
   void initState() {
     super.initState();
-    Provider.of<AppHandler>(context, listen: false).loadData();
   }
 
   @override

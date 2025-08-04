@@ -21,6 +21,7 @@ class AppHandler extends ChangeNotifier {
   FlutterSecureStorage? storage;
 
   bool get loggedIn => state.login.loggedIn;
+  bool homePageInitialized = false;
 
   /* ---------- Statefile function ---------- */
 

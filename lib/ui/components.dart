@@ -27,6 +27,8 @@ class RecommendationCard extends StatefulWidget {
 class _RecommendationCardState extends State<RecommendationCard> {
   @override
   Widget build(BuildContext context) {
+    var parsedTitle = widget.title.length > 26 ? "${widget.title.substring(0,26)}..." : widget.title;
+
     ThemeData theme = Theme.of(context);
     ComThemeExtension ext = Theme.of(context).extension<ComThemeExtension>()!;
 
@@ -57,19 +59,19 @@ class _RecommendationCardState extends State<RecommendationCard> {
             decoration: ShapeDecoration(
               color: theme.colorScheme.surfaceBright,
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadiusGeometry.circular(15.0),
+                borderRadius: BorderRadiusGeometry.circular(10.0),
               ),
             ),
+            width: 115,
             child: CachedNetworkImage(
               placeholder: (context, url) => CircularProgressIndicator(),
               errorWidget: (context, url, error) => Icon(Icons.error),
 
               imageUrl: widget.poster.toString(),
               imageBuilder: (context, imageProvider) => Container(
-                width: 115,
                 decoration: ShapeDecoration(
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadiusGeometry.circular(15.0),
+                    borderRadius: BorderRadiusGeometry.circular(10.0),
                   ),
                   image: DecorationImage(
                     image: imageProvider,
@@ -81,11 +83,67 @@ class _RecommendationCardState extends State<RecommendationCard> {
           ),
 
           // Info panel
-          Container(
-            padding: const EdgeInsets.all(8.0),
-            decoration: ShapeDecoration(
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadiusGeometry.circular(15.0),
+          Expanded(
+            child: Container(
+              padding: const EdgeInsets.all(8.0),
+              decoration: ShapeDecoration(
+                color: theme.colorScheme.surfaceBright,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadiusGeometry.circular(10.0),
+                ),
+              ),
+              child: Column(
+                spacing: 5.0,
+                children: [
+                  // Text & info
+                  Expanded(
+                    child: Container(
+                      decoration: ShapeDecoration(
+                        color: theme.colorScheme.surfaceDim,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadiusGeometry.circular(10.0),
+                        ),
+                      ),
+                      padding: const EdgeInsets.all(2.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            parsedTitle,
+                            style: TextStyle(
+                              fontSize: 15,
+                              fontFamily: 'Helvetica',
+                              fontWeight: FontWeight.w700,
+                            ),
+                            maxLines: 1,
+                          ),
+                          Divider(
+                            radius: BorderRadiusGeometry.circular(30.0),
+                            color: theme.colorScheme.surfaceBright,
+                            thickness: 4.0,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  // Ratings and button
+                  Row(
+                    children: [
+                      Column(children: [Container(), Container()]),
+                      Container(),
+                      ComButton(
+                        onPressed: () {},
+                        content: "Open",
+                        width: 100,
+                        icon: Icon(Icons.arrow_right_alt, size: 25),
+                        textStyle: TextStyle(
+                          fontSize: 20.0,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
               ),
             ),
           ),

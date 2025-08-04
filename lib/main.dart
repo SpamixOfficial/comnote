@@ -69,9 +69,12 @@ final _router = GoRouter(
 class App extends StatelessWidget {
   const App({super.key});
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
+    var handler = Provider.of<AppHandler>(context, listen: false);
+    var elementDraw = Provider.of<ElementsDraw>(context, listen: false);
+    handler.elementsState = elementDraw; // set handler child rq;
+
     return MaterialApp.router(
       title: 'ComNote',
       theme: comLight,
