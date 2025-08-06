@@ -9,7 +9,7 @@ class RecommendationCard extends StatefulWidget {
   final int? rank;
   final int popularity, id;
   final double? rating;
-  final Uri poster;
+  final Uri? poster;
   const RecommendationCard({
     super.key,
     required this.title,

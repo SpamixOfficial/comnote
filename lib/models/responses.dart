@@ -60,7 +60,7 @@ class AnimeSummary {
   @JsonKey(defaultValue: [])
   final List<Genre> genres;
   final int id;
-  final MainImageAsset mainPicture;
+  final MainImageAsset? mainPicture;
 
   @JsonKey(name: "mean")
   final double? rating;

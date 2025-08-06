@@ -67,9 +67,9 @@ AnimeSummary _$AnimeSummaryFromJson(Map<String, dynamic> json) => AnimeSummary(
           .toList() ??
       [],
   id: (json['id'] as num).toInt(),
-  mainPicture: MainImageAsset.fromJson(
-    json['main_picture'] as Map<String, dynamic>,
-  ),
+  mainPicture: json['main_picture'] == null
+      ? null
+      : MainImageAsset.fromJson(json['main_picture'] as Map<String, dynamic>),
   rating: (json['mean'] as num?)?.toDouble(),
   mediaType: $enumDecode(_$AnimeTypeEnumMap, json['media_type']),
   numEpisodes: (json['num_episodes'] as num).toInt(),

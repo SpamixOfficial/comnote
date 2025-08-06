@@ -94,14 +94,29 @@ void setTopList(TopBarEntry val, BuildContext context) {
 
 List<TopBarEntry<SearchRanking>> topBarEntries = [
   TopBarEntry(
-    label: "Top 10 Airing",
+    label: "Now Watching",
     onSelected: setTopList,
-    value: SearchRanking.top10Airing,
+    value: SearchRanking.nowWatching,
+  ),
+  TopBarEntry(
+    label: "Trending",
+    onSelected: setTopList,
+    value: SearchRanking.trending,
   ),
   TopBarEntry(
     label: "Just Added",
     onSelected: setTopList,
     value: SearchRanking.justAdded,
+  ),
+    TopBarEntry(
+    label: "Top 10 Airing",
+    onSelected: setTopList,
+    value: SearchRanking.top10Airing,
+  ),
+  TopBarEntry(
+    label: "Top 10 Upcoming",
+    onSelected: setTopList,
+    value: SearchRanking.top10Upcoming,
   ),
 ];
 

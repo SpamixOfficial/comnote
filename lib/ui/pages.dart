@@ -1,8 +1,6 @@
-import 'dart:developer';
-
 import 'package:comnote/data.dart';
 import 'package:comnote/loginbrowser.dart';
-import 'package:comnote/models/generic.dart';
+import 'package:comnote/main.dart';
 import 'package:comnote/ui/components.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -42,7 +40,7 @@ class _HomePageState extends State<HomePage> {
 
       // Fetch the initial homepage data
       await handler.loadHomePageData(
-        ranking: SearchRanking.top10Airing,
+        ranking: topBarEntries.first.value,
         updateChosenList: true,
       );
 
@@ -82,7 +80,7 @@ class _HomePageState extends State<HomePage> {
                       title: summary.node.title,
                       description: summary.node.synopsis,
                       popularity: summary.node.rankInLists,
-                      poster: summary.node.mainPicture.large,
+                      poster: summary.node.mainPicture?.large,
                       rank: summary.node.rank,
                       rating: summary.node.rating,
                       id: summary.node.id,
