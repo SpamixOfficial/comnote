@@ -53,7 +53,10 @@ class _RecommendationCardState extends State<RecommendationCard> {
     }
 
     Shadow ratingTextShadow = Shadow(color: ratingColor, blurRadius: 4.0);
-    Shadow ratingShadow = Shadow(color: ratingColor, blurRadius: 9.0);
+    BoxShadow ratingShadow = BoxShadow(
+      color: ratingColor.withAlpha(0x7f),
+      blurRadius: 5.0,
+    );
 
     return Container(
       height: 180,
@@ -180,7 +183,30 @@ class _RecommendationCardState extends State<RecommendationCard> {
                       spacing: 5.0,
                       children: [
                         // Ranks
-                        Column(children: [Container(), Container()]),
+                        Padding(
+                          padding: EdgeInsetsGeometry.symmetric(vertical: 1.5),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            mainAxisSize: MainAxisSize.max,
+                            children: [
+                              buildPill(
+                                context,
+                                icon: Icons.emoji_events,
+                                content:
+                                    "#${widget.rank?.toString() ?? "????"}",
+                                theme: theme,
+                                ext: ext,
+                              ),
+                              buildPill(
+                                context,
+                                icon: Icons.favorite,
+                                content: "#${widget.popularity.toString()}",
+                                theme: theme,
+                                ext: ext,
+                              ),
+                            ],
+                          ),
+                        ),
                         // Rating
                         Container(
                           width: 60,
@@ -191,6 +217,7 @@ class _RecommendationCardState extends State<RecommendationCard> {
                               borderRadius: BorderRadiusGeometry.circular(5.0),
                               side: BorderSide(color: ratingColor, width: 2),
                             ),
+                            shadows: [ratingShadow],
                           ),
                           child: Row(
                             mainAxisSize: MainAxisSize.max,
@@ -238,6 +265,58 @@ class _RecommendationCardState extends State<RecommendationCard> {
                   ),
                 ],
               ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget buildPill(
+    BuildContext context, {
+    required IconData icon,
+    required String content,
+    required ThemeData theme,
+    required ComThemeExtension ext,
+  }) {
+    return Container(
+      width: 60,
+      decoration: ShapeDecoration(
+        color: ext.cardBackground ?? theme.colorScheme.surface,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadiusGeometry.circular(5.0),
+          side: BorderSide(
+            color: ext.onCardBackground ?? theme.colorScheme.onSurface,
+            width: 1,
+          ),
+        ),
+        shadows: [
+          BoxShadow(
+            offset: Offset(0, 4),
+            blurRadius: 4.0,
+            color: Colors.black.withAlpha(0x4c),
+          ),
+        ],
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.max,
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        spacing: 5.0,
+        children: [
+          Icon(
+            icon,
+            size: 10.0,
+            color: ext.onCardBackground ?? theme.colorScheme.onSurface,
+          ),
+          Text(
+            content,
+            style: TextStyle(
+              height: 1.0, // compress so it is centered :D
+              fontSize: 9,
+              fontFamily: 'Helvetica',
+              fontWeight: FontWeight.bold,
+              color: ext.onCardBackground ?? theme.colorScheme.onSurface,
             ),
           ),
         ],
