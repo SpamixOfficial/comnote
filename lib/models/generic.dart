@@ -54,7 +54,8 @@ class Broadcast {
 
   static DateTime? _startTimeFromJson(String? startTime) =>
       startTime != null ? DateFormat.Hm().parse(startTime) : null;
-  static String? _startTimeToJson(DateTime? val) => val != null ? DateFormat.Hm().format(val) : null;
+  static String? _startTimeToJson(DateTime? val) =>
+      val != null ? DateFormat.Hm().format(val) : null;
 }
 
 @JsonSerializable(fieldRename: FieldRename.snake)
@@ -125,6 +126,24 @@ enum AiringStatus { notYetAired, currentlyAiring, finishedAiring }
 enum AgeRating { pg13, rx, rPlus, pg, r, g }
 
 @JsonEnum(fieldRename: FieldRename.snake)
+enum NsfwRating {
+  white,
+  gray,
+  black;
+
+  bool isAgeAllowed(NsfwRating rating, AgeRating age) {
+    switch (rating) {
+      case white:
+        return true;
+      case gray:
+        return ![AgeRating.g, AgeRating.pg].contains(age);
+      case black:
+        return [AgeRating.rx, AgeRating.rx].contains(age);
+    }
+  }
+}
+
+@JsonEnum(fieldRename: FieldRename.snake)
 enum SearchRanking {
   justAdded('just_added'),
   mostPopular('most_popular'), // not sure where we would get this from atm
@@ -156,4 +175,13 @@ class Ranking {
 enum SearchSort { scoreVal, totalMembers, startDate, defaultSort }
 
 @JsonEnum(fieldRename: FieldRename.snake)
-enum WeekDay { monday, tuesday, wednesday, thursday, friday, saturday, sunday, other }
+enum WeekDay {
+  monday,
+  tuesday,
+  wednesday,
+  thursday,
+  friday,
+  saturday,
+  sunday,
+  other,
+}

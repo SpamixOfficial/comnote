@@ -20,6 +20,8 @@ class ComThemeExtension extends ThemeExtension<ComThemeExtension> {
   final Color? midRating;
   final Color? goodRating;
 
+  final List<Color>? settingsItemGradient;
+
   const ComThemeExtension({
     required this.textShadowColor,
     required this.topBarGradientColors,
@@ -33,6 +35,7 @@ class ComThemeExtension extends ThemeExtension<ComThemeExtension> {
     required this.badRating,
     required this.goodRating,
     required this.midRating,
+    required this.settingsItemGradient
   });
 
   @override
@@ -48,6 +51,7 @@ class ComThemeExtension extends ThemeExtension<ComThemeExtension> {
     Color? badRating,
     Color? midRating,
     Color? goodRating,
+    List<Color>? settingsItemGradient
   }) {
     return ComThemeExtension(
       textShadowColor: textShadowColor,
@@ -62,6 +66,7 @@ class ComThemeExtension extends ThemeExtension<ComThemeExtension> {
       badRating: badRating,
       midRating: midRating,
       goodRating: goodRating,
+      settingsItemGradient: settingsItemGradient
     );
   }
 
@@ -98,6 +103,7 @@ class ComThemeExtension extends ThemeExtension<ComThemeExtension> {
       badRating: Color.lerp(badRating, other.badRating, t),
       midRating: Color.lerp(midRating, other.midRating, t),
       goodRating: Color.lerp(goodRating, other.goodRating, t),
+      settingsItemGradient: other.settingsItemGradient
     );
   }
 }
@@ -130,7 +136,8 @@ final comLight = ThemeData(
       cardDivider: Color(0xffe4e4e7),
       badRating: Color(0xffEA003E),
       midRating: Color(0xffDF6F00),
-      goodRating: Color(0xff009689)
+      goodRating: Color(0xff009689),
+      settingsItemGradient: [Color(0xffF8F8F8), Color(0xffD4D3D3)]
     ),
   ],
 );
@@ -201,6 +208,7 @@ final comDark = ThemeData(
       badRating: Color(0xffFE1C55),
       midRating: Color(0xffEEAF00),
       goodRating: Color(0xff00C850),
+      settingsItemGradient: [Color(0xff0D1529), Color(0xff061D7B)]
     ),
   ],
 );

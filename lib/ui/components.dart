@@ -1,7 +1,9 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:comnote/main.dart';
 import 'package:comnote/ui/theme.dart';
+
 import 'package:flutter/material.dart';
+import 'dart:math';
 import 'package:go_router/go_router.dart';
 
 class RecommendationCard extends StatefulWidget {
@@ -47,9 +49,10 @@ class _RecommendationCardState extends State<RecommendationCard> {
             > 3.5 && < 7.49 => ext.midRating,
             _ => ext.goodRating,
           }) ??
+          ext.onCardBackground ??
           theme.colorScheme.onSurface;
     } else {
-      ratingColor = theme.colorScheme.onSurface;
+      ratingColor = ext.onCardBackground ?? theme.colorScheme.onSurface;
     }
 
     Shadow ratingTextShadow = Shadow(color: ratingColor, blurRadius: 4.0);
@@ -700,4 +703,123 @@ CustomTransitionPage fadeTransition({
           );
         },
   );
+}
+
+class SettingsItem extends StatefulWidget {
+  final IconData icon;
+  final String content;
+  final VoidCallback onPressed;
+
+  const SettingsItem({
+    Key? key,
+    required this.icon,
+    required this.content,
+    required this.onPressed,
+  }) : super(key: key);
+
+  @override
+  _SettingsItemState createState() => _SettingsItemState();
+}
+
+class _SettingsItemState extends State<SettingsItem> {
+  bool _isPressed = false;
+
+  void _onTapDown(TapDownDetails details) {
+    setState(() {
+      _isPressed = true;
+    });
+  }
+
+  void _onTapUp(TapUpDetails details) {
+    setState(() {
+      _isPressed = false;
+    });
+    widget.onPressed();
+  }
+
+  void _onTapCancel() {
+    setState(() {
+      _isPressed = false;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final ext = Theme.of(context).extension<ComThemeExtension>()!;
+
+    var normalGradient =
+        ext.settingsItemGradient ?? [Colors.black, Colors.black];
+
+    double pressedBrightness = 1.2;
+
+    List<Color> pressedGradient = normalGradient
+        .map(
+          (c) => c.withValues(
+            red: min(1, c.r * pressedBrightness), // increase brightness by 50%
+            green: min(1, c.g * pressedBrightness),
+            blue: min(1, c.b * pressedBrightness),
+          ),
+        )
+        .toList();
+        
+    return GestureDetector(
+      onTapDown: _onTapDown,
+      onTapUp: _onTapUp,
+      onTapCancel: _onTapCancel,
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 100),
+        padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 10),
+        clipBehavior: Clip.antiAlias,
+        decoration: ShapeDecoration(
+          gradient: LinearGradient(
+            colors: _isPressed ? pressedGradient : normalGradient,
+          ),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
+          ),
+          shadows: [
+            BoxShadow(
+              color: Color(0x66000000),
+              blurRadius: 6,
+              offset: Offset(0, 4),
+              spreadRadius: 1,
+            ),
+          ],
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(
+                  widget.icon,
+                  size: 25.0,
+                  color: theme.colorScheme.onSurface,
+                ),
+                const SizedBox(width: 10),
+                Text(
+                  widget.content,
+                  style: TextStyle(
+                    color: theme.colorScheme.onSurface,
+                    fontSize: 20,
+                    height: 1.0,
+                    fontFamily: 'Helvetica',
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+              ],
+            ),
+            Icon(
+              Icons.keyboard_arrow_right,
+              size: 25.0,
+              color: theme.colorScheme.onSurface,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
 }

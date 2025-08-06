@@ -3,6 +3,8 @@ import 'package:comnote/loginbrowser.dart';
 import 'package:comnote/main.dart';
 import 'package:comnote/ui/components.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:material_symbols_icons/symbols.dart';
 import 'package:provider/provider.dart';
 
 class HomePage extends StatefulWidget {
@@ -35,6 +37,9 @@ class _HomePageState extends State<HomePage> {
       // Ensure app state is loaded
       await handler.loadData();
 
+      // Load all settings
+      await handler.loadSettings();
+
       // Trigger refresh indicator animation
       _refreshIndicatorKey.currentState?.show();
 
@@ -51,7 +56,7 @@ class _HomePageState extends State<HomePage> {
             ranking: handler.state.currentTopList,
             scrollPixel:
                 elementDraw.recommendationsScrollControl.position.pixels + 30,
-            loadNextPage: true
+            loadNextPage: true,
           );
         }
         //await handler.loadHomePageData(ranking: handler.state.currentTopList);
@@ -171,10 +176,28 @@ class _SettingsPageState extends State<SettingsPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Center(
+    return Padding(
+      padding: EdgeInsetsGeometry.symmetric(horizontal: 10.0, vertical: 10.0),
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[const Text("Rich bitch")],
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        spacing: 10.0,
+        children: [
+          SettingsItem(
+            icon: Icons.account_circle,
+            content: "Account Settings",
+            onPressed: () {
+              context.go("/settings/account");
+            },
+          ),
+          SettingsItem(
+            icon: Symbols.article_person,
+            content: "Content Settings",
+            onPressed: () {
+              context.go("/settings/content");
+            },
+          ),
+        ],
       ),
     );
   }

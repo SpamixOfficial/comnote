@@ -14,7 +14,7 @@ void main() {
     MultiProvider(
       providers: [
         ChangeNotifierProvider<AppHandler>(create: (_) => AppHandler()),
-        ChangeNotifierProvider<ElementsDraw>(create: (_) => ElementsDraw())
+        ChangeNotifierProvider<ElementsDraw>(create: (_) => ElementsDraw()),
       ],
       child: App(),
     ),
@@ -25,6 +25,7 @@ void main() {
 final _router = GoRouter(
   initialLocation: "/home",
   routes: [
+    GoRoute(path: "/", redirect: (_, _) => "/home"),
     ShellRoute(
       builder: (context, state, child) {
         return Scaffold(
@@ -63,6 +64,14 @@ final _router = GoRouter(
         ),
       ],
     ),
+    GoRoute(
+      path: "/settings/content",
+      builder: (context, state) => const Placeholder(),
+    ),
+    GoRoute(
+      path: "/settings/account",
+      builder: (context, state) => const Placeholder(),
+    ),
   ],
 );
 
@@ -85,10 +94,7 @@ class App extends StatelessWidget {
 }
 
 void setTopList(TopBarEntry val, BuildContext context) {
-  var handler = Provider.of<AppHandler>(
-    context,
-    listen: false,
-  );
+  var handler = Provider.of<AppHandler>(context, listen: false);
   handler.loadHomePageData(ranking: val.value, updateChosenList: true);
 }
 
@@ -108,7 +114,7 @@ List<TopBarEntry<SearchRanking>> topBarEntries = [
     onSelected: setTopList,
     value: SearchRanking.justAdded,
   ),
-    TopBarEntry(
+  TopBarEntry(
     label: "Top 10 Airing",
     onSelected: setTopList,
     value: SearchRanking.top10Airing,

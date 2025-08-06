@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:comnote/commands.dart';
 import 'package:comnote/models/generic.dart';
+import 'package:comnote/models/settings.dart';
 import 'package:comnote/models/state.dart';
 
 import 'package:flutter/material.dart';
@@ -17,6 +18,7 @@ class AppHandler extends ChangeNotifier {
   AppState state = AppState();
   Commands commands = Commands();
   ElementsDraw elementsState = ElementsDraw();
+  Settings settings = Settings();
   File? stateFile;
   FlutterSecureStorage? storage;
 
@@ -25,10 +27,10 @@ class AppHandler extends ChangeNotifier {
 
   /* ---------- Statefile function ---------- */
 
-  Future<Result<File>> getStateFile() async {
+  Future<Result<File>> getFile(String name) async {
     if (stateFile == null) {
       var docPath = (await getApplicationDocumentsDirectory()).path;
-      File f = File("$docPath/state.json");
+      File f = File("$docPath/$name");
       stateFile = f;
     }
 
@@ -42,7 +44,7 @@ class AppHandler extends ChangeNotifier {
   }
 
   Future<Result<()>> loadData() async {
-    File sFile = (await getStateFile()).getOrThrow();
+    File sFile = (await getFile("state.json")).getOrThrow();
 
     try {
       var contents = await sFile.readAsString();
@@ -70,7 +72,7 @@ class AppHandler extends ChangeNotifier {
   }
 
   Future<Result<()>> saveData() async {
-    File sFile = (await getStateFile()).getOrThrow();
+    File sFile = (await getFile("state.json")).getOrThrow();
 
     try {
       var contents = state.toJson();
@@ -81,6 +83,41 @@ class AppHandler extends ChangeNotifier {
         st.write(key: "token", value: state.login.token);
         st.write(key: "refreshToken", value: state.login.refreshToken);
       }
+    } on Exception catch (e) {
+      return Failure(e);
+    }
+
+    return Success(());
+  }
+
+  /* ---------- Settings ---------- */
+
+  Future<Result<()>> loadSettings() async {
+    File file = (await getFile("settings.json")).getOrThrow();
+
+    try {
+      var contents = await file.readAsString();
+
+      if (contents.isNotEmpty) {
+        var jsonContents = jsonDecode(contents);
+        settings = Settings.fromJson(jsonContents);
+
+        notifyListeners();
+      }
+    } on Exception catch (e) {
+      return Failure(e);
+    }
+
+    return Success(());
+  }
+
+    Future<Result<()>> saveSettings() async {
+    File file = (await getFile("settings.json")).getOrThrow();
+
+    try {
+      var contents = state.toJson();
+
+      stateFile = await file.writeAsString(jsonEncode(contents));
     } on Exception catch (e) {
       return Failure(e);
     }
