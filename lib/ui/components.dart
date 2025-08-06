@@ -235,7 +235,7 @@ class _RecommendationCardState extends State<RecommendationCard> {
                                 shadows: [ratingTextShadow],
                               ),
                               Text(
-                                widget.rating?.toString() ?? "?.??",
+                                widget.rating?.toStringAsFixed(2) ?? "?.??",
                                 style: TextStyle(
                                   height: 1.0, // compress so it is centered :D
                                   fontSize: 14,
